@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Products extends StatelessWidget {
   final List<String> products; //con final, products solo se puede cambiar desde afuera, no desde adentro
 
-  Products(this.products) { //constructor, shortcut, recibe y asigna propiedad a products
+  Products([this.products = const []]) { //constructor, shortcut, recibe y asigna propiedad a products
     print('Products Widged Constructor');
   }
 

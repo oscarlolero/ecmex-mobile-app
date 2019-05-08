@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         appBar: AppBar(title: Text('EasyList')),
-        body: ProductManager('Food Testers'),
+        body: ProductManager(startingProduct: 'Food Testers'),
       ),
     );
   }

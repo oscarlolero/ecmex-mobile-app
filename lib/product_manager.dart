@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
 import './products.dart';
+import './product_control.dart';
 
-class ProductManager extends StatefulWidget { //aqui no se puede manejar datos internos
+class ProductManager extends StatefulWidget {
+  //aqui no se puede manejar datos internos
   final String startingProduct;
-  ProductManager(this.startingProduct) {
+
+  ProductManager({this.startingProduct = 'Sweets Tester'}) {
     print('ProductManager Widged Constructor');
   }
 
@@ -16,14 +19,17 @@ class ProductManager extends StatefulWidget { //aqui no se puede manejar datos i
   }
 }
 
-class _ProductManagerState extends State<ProductManager> { //aqui se pueden manejar datos internos
-  List<String> _products = []; //array
-
+class _ProductManagerState extends State<ProductManager> {
+  //aqui se pueden manejar datos internos
+  final List<String> _products = []; //array igual que js, no se podria hacer _products = ['asdas'] pero si metodos como add, si no se usa const para que ni el add te deje
+  //con static seria  final List<String> _products = const [];
   @override
-  void initState() {//corre antes del build
+  void initState() {
+    //corre antes del build
     print('ProductManager State  initState');
     super.initState();
-    _products.add(widget.startingProduct);//asi es como se tiene que inicializar
+    _products
+        .add(widget.startingProduct); //asi es como se tiene que inicializar
   }
 
   @override
@@ -32,21 +38,19 @@ class _ProductManagerState extends State<ProductManager> { //aqui se pueden mane
     super.didUpdateWidget(oldWidget);
   }
 
+  void _addProduct(String product) {
+    setState(() {
+      _products.add(product);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     print('ProductManager State  build');
     return Column(children: <Widget>[
       Container(
         margin: EdgeInsets.all(10.0),
-        child: RaisedButton(
-          color: Theme.of(context).primaryColor,
-          onPressed: () {
-            setState(() {
-              _products.add('Advanced Food Tester');
-            });
-          },
-          child: Text('Add product'),
-        ),
+        child: ProductControl(_addProduct)
       ),
       Products(_products)
     ]);
