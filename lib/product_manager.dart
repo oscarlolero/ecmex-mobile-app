@@ -21,7 +21,8 @@ class ProductManager extends StatefulWidget {
 
 class _ProductManagerState extends State<ProductManager> {
   //aqui se pueden manejar datos internos
-  final List<String> _products = []; //array igual que js, no se podria hacer _products = ['asdas'] pero si metodos como add, si no se usa const para que ni el add te deje
+  final List<String> _products =
+      []; //array igual que js, no se podria hacer _products = ['asdas'] pero si metodos como add, si no se usa const para que ni el add te deje
   //con static seria  final List<String> _products = const [];
   @override
   void initState() {
@@ -38,9 +39,9 @@ class _ProductManagerState extends State<ProductManager> {
     super.didUpdateWidget(oldWidget);
   }
 
-  void _addProduct(String product) {
+  void _addProduct(String productName) {
     setState(() {
-      _products.add(product);
+      _products.add(productName);
     });
   }
 
@@ -49,10 +50,8 @@ class _ProductManagerState extends State<ProductManager> {
     print('ProductManager State  build');
     return Column(children: <Widget>[
       Container(
-        margin: EdgeInsets.all(10.0),
-        child: ProductControl(_addProduct)
-      ),
-      Products(_products)
+          margin: EdgeInsets.all(10.0), child: ProductControl(_addProduct)),
+      Expanded(child: Products(_products))
     ]);
   }
 }

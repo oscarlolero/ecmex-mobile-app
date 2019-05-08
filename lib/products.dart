@@ -10,14 +10,14 @@ class Products extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('Products Widged build');
-    return  Column(
+    return ListView(
       children: products
           .map(
             (element) => Card(
           child: Column(
             children: <Widget>[
               //array de widgets
-//              Image.asset('assets/food.jpg'),
+              Image.asset('assets/food.jpg'),
               Text(element)
             ],
           ),
