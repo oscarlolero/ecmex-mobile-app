@@ -5,9 +5,9 @@ import './product_control.dart';
 
 class ProductManager extends StatefulWidget {
   //aqui no se puede manejar datos internos
-  final String startingProduct;
+  final Map<String, String> startingProduct;
 
-  ProductManager({this.startingProduct = 'Sweets Tester'}) {
+  ProductManager({this.startingProduct}) {
     print('ProductManager Widged Constructor');
   }
 
@@ -21,7 +21,7 @@ class ProductManager extends StatefulWidget {
 
 class _ProductManagerState extends State<ProductManager> {
   //aqui se pueden manejar datos internos
-  final List<String> _products =
+  final List<Map<String, String>> _products =
       []; //array igual que js, no se podria hacer _products = ['asdas'] pero si metodos como add, si no se usa const para que ni el add te deje
   //con static seria  final List<String> _products = const [];
   @override
@@ -29,8 +29,12 @@ class _ProductManagerState extends State<ProductManager> {
     //corre antes del build
     print('ProductManager State  initState');
     super.initState();
-    _products
-        .add(widget.startingProduct); //asi es como se tiene que inicializar
+
+    if(widget.startingProduct != null) {
+      _products
+          .add(widget.startingProduct); //asi es como se tiene que inicializar
+    }
+
   }
 
   @override
@@ -39,9 +43,15 @@ class _ProductManagerState extends State<ProductManager> {
     super.didUpdateWidget(oldWidget);
   }
 
-  void _addProduct(String productName) {
+  void _addProduct(Map<String, String> product) {
     setState(() {
-      _products.add(productName);
+      _products.add(product);
+    });
+  }
+
+  void _deleteProduct(int index) {
+    setState(() {
+      _products.removeAt(index);
     });
   }
 
@@ -51,7 +61,7 @@ class _ProductManagerState extends State<ProductManager> {
     return Column(children: <Widget>[
       Container(
           margin: EdgeInsets.all(10.0), child: ProductControl(_addProduct)),
-      Expanded(child: Products(_products))
+      Expanded(child: Products(_products, deleteProduct: _deleteProduct))
     ]);
   }
 }

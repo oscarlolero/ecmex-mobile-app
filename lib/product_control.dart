@@ -10,7 +10,10 @@ class ProductControl extends StatelessWidget {
     return RaisedButton(
       color: Theme.of(context).primaryColor,
       onPressed: () {
-        addProduct('Huevos');
+        addProduct({
+          'title': 'Caca',
+          'image': 'assets/food.jpg'
+        });
       },
       child: Text('Add product'),
     );

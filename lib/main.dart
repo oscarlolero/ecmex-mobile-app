@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 //import 'package:flutter/rendering.dart';
 
-import './product_manager.dart';
+import './pages/auth.dart';
 
 //shortcut: void main() => runApp(MyApp());
 void main() {
@@ -19,14 +19,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
 //      debugShowMaterialGrid: true,
       theme: ThemeData(
-//        brightness: Brightness.light,
+//      brightness: Brightness.light,
         primarySwatch: Colors.deepOrange,
-        accentColor: Colors.deepPurple
-      ),
-      home: Scaffold(
-        appBar: AppBar(title: Text('EasyList')),
-        body: ProductManager(startingProduct: 'Food Testers'),
-      ),
+        accentColor: Colors.deepPurple),
+      home: AuthPage()
     );
   }
 }
