@@ -3,22 +3,26 @@ import 'package:flutter/material.dart';
 import './products.dart';
 import './product_control.dart';
 
-class ProductManager extends StatefulWidget {
-  //aqui no se puede manejar datos internos
-  final Map<String, String> startingProduct;
+class ProductManager extends StatelessWidget {
+  final List<Map<String, String>> products;
+  final Function addProduct;
+  final Function deleteProduct;
 
-  ProductManager({this.startingProduct}) {
-    print('ProductManager Widged Constructor');
-  }
+  ProductManager(this.products, this.addProduct, this.deleteProduct);
 
-  //ahora es stateful porque se planea manehar la lista de productos y cambiarlos
   @override
-  State<StatefulWidget> createState() {
-    print('ProductManager Widged createState');
-    return _ProductManagerState();
+  Widget build(BuildContext context) {
+    print('ProductManager State  build');
+    return Column(children: <Widget>[
+      Container(
+          margin: EdgeInsets.all(10.0), child: ProductControl(addProduct)),
+      Expanded(child: Products(products, deleteProduct: deleteProduct))
+    ]);
   }
 }
 
+/*
+//Antes de la movedera
 class _ProductManagerState extends State<ProductManager> {
   //aqui se pueden manejar datos internos
   final List<Map<String, String>> _products =
@@ -65,3 +69,5 @@ class _ProductManagerState extends State<ProductManager> {
     ]);
   }
 }
+
+ */

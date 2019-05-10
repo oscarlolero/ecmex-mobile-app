@@ -25,11 +25,10 @@ class Products extends StatelessWidget {
             children: <Widget>[
               FlatButton(
                 child: Text('Details'),
-                onPressed: () => Navigator.push<bool>(
-                      //push regresara un future que sera un boolean
-                      context,
-
-                    ).then((bool value) {
+                //push regresara un future que sera un boolean
+                onPressed: () => Navigator.pushNamed<bool>(
+                            context, '/product/' + index.toString())
+                        .then((bool value) {
                       if (value) {
                         deleteProduct(index);
                       }
