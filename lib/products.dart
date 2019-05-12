@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
-import './pages/product.dart';
 
 class Products extends StatelessWidget {
-  final List<Map<String, String>>
+  final List<Map<String, dynamic>>
       products; //con final, products solo se puede cambiar desde afuera, no desde adentro
-  final Function deleteProduct;
 
-  Products(this.products, {this.deleteProduct}) {
+  Products(this.products) {
     //constructor, shortcut, recibe y asigna propiedad a products
     print('Products Widged Constructor');
   }
@@ -30,7 +28,7 @@ class Products extends StatelessWidget {
                             context, '/product/' + index.toString())
                         .then((bool value) {
                       if (value) {
-                        deleteProduct(index);
+//                        deleteProduct(index);
                       }
                     }),
               ),
