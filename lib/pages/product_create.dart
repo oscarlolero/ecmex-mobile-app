@@ -15,21 +15,39 @@ class _ProductCreatePage extends State<ProductCreatePage> {
   String _titleValue, _descriptionValue; //se puede o no inicializar
   double _priceValue;
 
+  Widget _buildTitleTextField() {
+    return TextField(
+        decoration: InputDecoration(
+          labelText: 'Product tittle',
+        ),
+        onChanged: (String value) {
+          setState(() {
+            _titleValue = value;
+          });
+        });
+  }
+
+  _submitForm() {
+    // dynamic porque puede ser string o double
+    final Map<String, dynamic> product = {
+      'title': _titleValue,
+      'description': _descriptionValue,
+      'price': _priceValue,
+      'image': 'assets/food.jpg'
+    };
+    widget.addProduct(product);
+    Navigator.pushReplacementNamed(context, '/products');
+  }
+
+  //Tratar de tener lo menro posible de logica en el build, solo enfocarse al diseño en el build
+  //
   @override
   Widget build(BuildContext context) {
     return Container(
         margin: EdgeInsets.all(10.0),
         child: ListView(
           children: <Widget>[
-            TextField(
-                decoration: InputDecoration(
-                  labelText: 'Product tittle',
-                ),
-                onChanged: (String value) {
-                  setState(() {
-                    _titleValue = value;
-                  });
-                }),
+            _buildTitleTextField(),
             TextField(
                 maxLines: 4,
                 decoration: InputDecoration(
@@ -54,19 +72,11 @@ class _ProductCreatePage extends State<ProductCreatePage> {
             SizedBox(height: 10.0),
             RaisedButton(
               child: Text('Save'),
-              color: Theme.of(context).primaryColor,
+              color: Theme
+                  .of(context)
+                  .primaryColor,
               textColor: Colors.white,
-              onPressed: () {
-                // dynamic porque puede ser string o double
-                final Map<String, dynamic> product = {
-                  'title': _titleValue,
-                  'description': _descriptionValue,
-                  'price': _priceValue,
-                  'image': 'assets/food.jpg'
-                };
-                widget.addProduct(product);
-                Navigator.pushReplacementNamed(context, '/products');
-              },
+              onPressed: _submitForm,
             )
           ],
         ));
