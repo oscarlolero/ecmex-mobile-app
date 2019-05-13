@@ -15,19 +15,20 @@ class ProductCard extends StatelessWidget {
       alignment: MainAxisAlignment.center,
       children: <Widget>[
         IconButton(
-          color: Theme.of(context).accentColor,
+          color: Colors.purple,
           icon: Icon(Icons.info),
+          onPressed: () => Navigator.pushNamed(context, '/product/' + productIndex.toString())
+          ),
           //push regresara un future que sera un boolean
-          onPressed: () => Navigator.pushNamed<bool>(
-                      context, '/product/' + productIndex.toString())
-                  .then(
-                (bool value) {
-                  if (value) {
-//                        deleteProduct(index);
-                  }
-                },
-              ),
-        ),
+//          onPressed: () => Navigator.pushNamed<bool>(context, '/product/' + productIndex.toString())
+//                  .then(
+//                (bool value) {
+//                  if (value) {
+////                        deleteProduct(index);
+//                  }
+//                },
+//              ),
+
         IconButton(
           color: Colors.red,
           icon: Icon(Icons.favorite_border),

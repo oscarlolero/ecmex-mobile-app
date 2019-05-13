@@ -1,19 +1,30 @@
 import 'package:flutter/material.dart';
 
-class ProductCreatePage extends StatefulWidget {
+class ProductEditPage extends StatefulWidget {
   final Function addProduct;
+  final Function updateProduct;
+  final int productIndex;
+  final Map<String, dynamic> product;
 
-  ProductCreatePage(this.addProduct);
+  ProductEditPage(
+      {this.addProduct,
+      this.updateProduct,
+      this.product,
+      this.productIndex}); //PARAMETROS OPCIONALES
 
   @override
   State<StatefulWidget> createState() {
-    return _ProductCreatePage();
+    return _ProductEditPage();
   }
 }
 
-class _ProductCreatePage extends State<ProductCreatePage> {
-  String _titleValue, _descriptionValue; //se puede o no inicializar
-  double _priceValue;
+class _ProductEditPage extends State<ProductEditPage> {
+  final Map<String, dynamic> _formData = {
+    'title': null,
+    'description': null,
+    'price': null,
+    'image': 'assets/food.jpg'
+  };
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -23,16 +34,16 @@ class _ProductCreatePage extends State<ProductCreatePage> {
         labelText: 'Product tittle',
       ),
 //      autovalidate: true,
+      initialValue: widget.product == null ? '' : widget.product['title'],
       validator: (String value) {
         //if(value.trim().length <= 0) {
-        if(value.isEmpty || value.length < 5) {
+        if (value.isEmpty || value.length < 5) {
           return 'Title is required and should me 5+ characters long.';
         }
       },
       onSaved: (String value) {
-        setState(() {
-          _titleValue = value;
-        });
+        //No es necesario el setState, es una llamada al build inncesaria
+        _formData['title'] = value;
       },
     );
   }
@@ -43,16 +54,15 @@ class _ProductCreatePage extends State<ProductCreatePage> {
       decoration: InputDecoration(
         labelText: 'Description',
       ),
+      initialValue: widget.product == null ? '' : widget.product['description'],
       validator: (String value) {
         //if(value.trim().length <= 0) {
-        if(value.isEmpty || value.length < 5) {
+        if (value.isEmpty || value.length < 5) {
           return 'Description is required and should be 5+ characters long.';
         }
       },
       onSaved: (String value) {
-        setState(() {
-          _descriptionValue = value;
-        });
+        _formData['description'] = value;
       },
     );
   }
@@ -63,41 +73,36 @@ class _ProductCreatePage extends State<ProductCreatePage> {
         decoration: InputDecoration(
           labelText: 'Price',
         ),
+        initialValue:
+            widget.product == null ? '' : widget.product['price'].toString(),
         validator: (String value) {
           //if(value.trim().length <= 0) {
-          if(value.isEmpty || !RegExp(r'^(?:[1-9]\d*|0)?(?:\.\d+)?$').hasMatch(value)) {
+          if (value.isEmpty ||
+              !RegExp(r'^(?:[1-9]\d*|0)?(?:\.\d+)?$').hasMatch(value)) {
             return 'Price is required and should be a number.';
           }
         },
         onSaved: (String value) {
-          setState(() {
-            _priceValue = double.parse(value);
-          });
+          _formData['price'] = double.parse(value);
         });
   }
 
-
-
-  _submitForm() {
-    if(!_formKey.currentState.validate()) {
-      return;//detener ejecucion
+  void _submitForm() {
+    if (!_formKey.currentState.validate()) {
+      return; //detener ejecucion
     }
-    _formKey.currentState.save(); //cada vez que se llame savem se ejecuta el onSaved para cada textformfield
-    // dynamic porque puede ser string o double
-    final Map<String, dynamic> product = {
-      'title': _titleValue,
-      'description': _descriptionValue,
-      'price': _priceValue,
-      'image': 'assets/food.jpg'
-    };
-    widget.addProduct(product);
+    _formKey.currentState
+        .save(); //cada vez que se llame savem se ejecuta el onSaved para cada textformfield
+    if (widget.product == null) {
+      widget.addProduct(_formData);
+    } else {
+      widget.updateProduct(widget.productIndex, _formData);
+    }
+
     Navigator.pushReplacementNamed(context, '/products');
   }
 
-  //Tratar de tener lo menro posible de logica en el build, solo enfocarse al diseño en el build
-  //
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildPageContent(BuildContext context) {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double targetWidth =
         MediaQuery.of(context).orientation == Orientation.landscape
@@ -145,5 +150,20 @@ class _ProductCreatePage extends State<ProductCreatePage> {
 //        },
 //      ),
 //    );
+  }
+
+  //Tratar de tener lo menro posible de logica en el build, solo enfocarse al diseño en el build
+  //
+  @override
+  Widget build(BuildContext context) {
+    final Widget pageContent = _buildPageContent(context);
+    return widget.product == null
+        ? pageContent
+        : Scaffold(
+            appBar: AppBar(
+              title: Text('Edit product'),
+            ),
+            body: pageContent,
+          );
   }
 }
