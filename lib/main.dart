@@ -43,10 +43,9 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
 //      debugShowMaterialGrid: true,
       theme: ThemeData(
-//      brightness: Brightness.light,
-          primarySwatch: Colors.deepOrange,
-//          fontFamily: 'Oswald'),
-          accentColor: Colors.deepPurple,
+        primarySwatch: Colors.deepOrange,
+        accentColor: Colors.deepPurple,
+        buttonColor: Colors.deepOrange,
       ),
 //      home: AuthPage(), lo mismo que la ruta '/', no s epeuden poner al mismo tiempo
       routes: {

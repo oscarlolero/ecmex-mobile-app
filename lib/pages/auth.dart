@@ -63,26 +63,37 @@ class _AuthPage extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
+    //que sea del tamaño del 80% del device width
+    //MediaQuery.of(context).size.width * 0.8,
+//    final double deviceWidth = MediaQuery.of(context).size.width;
+//    final double targetWidth = deviceWidth > 550.0 ? 500.0 : deviceWidth * 0.95;
+
+    final double deviceWidth = MediaQuery.of(context).size.width;
+    final double targetWidth = MediaQuery.of(context).orientation == Orientation.landscape ? 500.0 : deviceWidth * 0.95;
+
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
+//      appBar: AppBar(title: Text('Login')),
       body: Container(
         decoration: _buildBackgroundImage(),
         padding: EdgeInsets.all(25.0),
         child: Center(
           child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                _buildUsernameTextField(),
-                SizedBox(height: 10.0),
-                _buildUPasswordTextField(),
-                _buildAcceptTermsSwitch(),
-                SizedBox(height: 15.0),
-                RaisedButton(
-                  color: Theme.of(context).primaryColor,
-                  child: Text('LOGIN', style: TextStyle(color: Colors.white)),
-                  onPressed: _submitForm,
-                ),
-              ],
+            child: Container(// MediaQuery.of(context).orientation == Orientation.portrait ?
+              width: targetWidth,
+              child: Column(
+                children: <Widget>[
+                  _buildUsernameTextField(),
+                  SizedBox(height: 10.0),
+                  _buildUPasswordTextField(),
+                  _buildAcceptTermsSwitch(),
+                  SizedBox(height: 15.0),
+                  RaisedButton(
+                    color: Theme.of(context).primaryColor,
+                    child: Text('LOGIN', style: TextStyle(color: Colors.white)),
+                    onPressed: _submitForm,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
