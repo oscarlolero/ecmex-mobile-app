@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 //import 'package:flutter/rendering.dart';
 
+import './pages/auth.dart';
 import './pages/products_admin.dart';
 import './pages/products.dart';
 import './pages/product.dart';
@@ -48,6 +49,8 @@ class _MyAppState extends State<MyApp> {
 //      home: AuthPage(), lo mismo que la ruta '/', no s epeuden poner al mismo tiempo
       routes: {
         '/': (BuildContext context) =>
+            AuthPage(),
+        '/products': (BuildContext context) =>
             ProductsPage(_products),
         '/admin': (BuildContext context) => ProductsAdminPage(_addProduct, _deleteProduct),
       },

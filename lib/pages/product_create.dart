@@ -12,9 +12,8 @@ class ProductCreatePage extends StatefulWidget {
 }
 
 class _ProductCreatePage extends State<ProductCreatePage> {
-  String titleValue = '';
-  String descriptionValue; //se puede o no inicializar
-  double priceValue;
+  String _titleValue, _descriptionValue; //se puede o no inicializar
+  double _priceValue;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +27,7 @@ class _ProductCreatePage extends State<ProductCreatePage> {
                 ),
                 onChanged: (String value) {
                   setState(() {
-                    titleValue = value;
+                    _titleValue = value;
                   });
                 }),
             TextField(
@@ -38,7 +37,7 @@ class _ProductCreatePage extends State<ProductCreatePage> {
                 ),
                 onChanged: (String value) {
                   setState(() {
-                    descriptionValue = value;
+                    _descriptionValue = value;
                   });
                 }),
             TextField(
@@ -48,7 +47,7 @@ class _ProductCreatePage extends State<ProductCreatePage> {
                 ),
                 onChanged: (String value) {
                   setState(() {
-                    priceValue = double.parse(value);
+                    _priceValue = double.parse(value);
                   });
                 }),
             //tambien se puede usar un container
@@ -60,13 +59,13 @@ class _ProductCreatePage extends State<ProductCreatePage> {
               onPressed: () {
                 // dynamic porque puede ser string o double
                 final Map<String, dynamic> product = {
-                  'title': titleValue,
-                  'description': descriptionValue,
-                  'price': priceValue,
+                  'title': _titleValue,
+                  'description': _descriptionValue,
+                  'price': _priceValue,
                   'image': 'assets/food.jpg'
                 };
                 widget.addProduct(product);
-                Navigator.pushReplacementNamed(context, '/');
+                Navigator.pushReplacementNamed(context, '/products');
               },
             )
           ],
