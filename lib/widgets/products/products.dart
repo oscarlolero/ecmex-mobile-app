@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import './product_card.dart';
 
 class Products extends StatelessWidget {
   final List<Map<String, dynamic>>
@@ -10,41 +11,14 @@ class Products extends StatelessWidget {
     print('Products Widged Constructor');
   }
 
-  Widget _buildProductItem(BuildContext context, int index) {
-    //solo se puede usar dentro del widget
-    return Card(
-      child: Column(
-        children: <Widget>[
-          //array de widgets
-          Image.asset(products[index]['image']),
-          Text(products[index]['title']),
-          ButtonBar(
-            alignment: MainAxisAlignment.center,
-            children: <Widget>[
-              FlatButton(
-                child: Text('Details'),
-                //push regresara un future que sera un boolean
-                onPressed: () => Navigator.pushNamed<bool>(
-                            context, '/product/' + index.toString())
-                        .then((bool value) {
-                      if (value) {
-//                        deleteProduct(index);
-                      }
-                    }),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-  }
+//expanded, flexible
 
   Widget _buildProductLists() {
     Widget productCards;
     if (products.length > 0) {
       productCards = ListView.builder(
         //para cuando habra listas muy gfrandes, de lo contrariom, solo usar ListView
-        itemBuilder: _buildProductItem,
+        itemBuilder: (BuildContext context, int index) => ProductCard(products[index], index),
         //se ejecutara dependiendo del products.length
         itemCount: products.length,
       );

@@ -45,14 +45,15 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
 //      brightness: Brightness.light,
           primarySwatch: Colors.deepOrange,
-          accentColor: Colors.deepPurple),
+//          fontFamily: 'Oswald'),
+          accentColor: Colors.deepPurple,
+      ),
 //      home: AuthPage(), lo mismo que la ruta '/', no s epeuden poner al mismo tiempo
       routes: {
-        '/': (BuildContext context) =>
-            AuthPage(),
-        '/products': (BuildContext context) =>
-            ProductsPage(_products),
-        '/admin': (BuildContext context) => ProductsAdminPage(_addProduct, _deleteProduct),
+        '/': (BuildContext context) => AuthPage(),
+        '/products': (BuildContext context) => ProductsPage(_products),
+        '/admin': (BuildContext context) =>
+            ProductsAdminPage(_addProduct, _deleteProduct),
       },
       //se ejecuta si la ruta no fue encontrada en routes
       onGenerateRoute: (RouteSettings settings) {
@@ -65,17 +66,22 @@ class _MyAppState extends State<MyApp> {
 
         if (pathElements[1] == 'product') {
           final int index = int.parse(pathElements[2]);
-          return MaterialPageRoute<bool>( //regresara un bool
-              builder: (BuildContext context) =>
-                  ProductPage(
-                      _products[index]['title'], _products[index]['image']));
+          return MaterialPageRoute<bool>(
+            //regresara un bool
+            builder: (BuildContext context) => ProductPage(
+                  _products[index]['title'],
+                  _products[index]['image'],
+                  _products[index]['price'],
+                  _products[index]['description'],
+                ),
+          );
         }
 
         return null;
       },
       onUnknownRoute: (RouteSettings settings) {
-        return MaterialPageRoute(builder: (BuildContext context) =>
-            ProductsPage(_products));
+        return MaterialPageRoute(
+            builder: (BuildContext context) => ProductsPage(_products));
       },
     );
   }

@@ -16,45 +16,60 @@ class _AuthPage extends State<AuthPage> {
     return Scaffold(
       appBar: AppBar(title: Text('Login')),
       body: Container(
-        margin: EdgeInsets.all(25.0),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.3), BlendMode.dstATop),
+            fit: BoxFit.cover,
+            image: AssetImage('assets/background.jpg'),
+          ),
+        ),
+        padding: EdgeInsets.all(25.0),
         child: Center(
-          child: ListView(
-            children: <Widget>[
-              TextField(
-                decoration: InputDecoration(
-                  labelText: 'Username',
+          child: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                TextField(
+                  decoration: InputDecoration(
+                      labelText: 'Username',
+                      filled: true,
+                      fillColor: Colors.white),
+                  onChanged: (String value) {
+                    _username = value;
+                  },
                 ),
-                onChanged: (String value) {
-                  _username = value;
-                },
-              ),
-              TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Password',
+                SizedBox(height: 10.0),
+                TextField(
+                  obscureText: true,
+                  decoration: InputDecoration(
+                      labelText: 'Password',
+                      filled: true,
+                      fillColor: Colors.white),
+                  onChanged: (String value) {
+                    _password = value;
+                  },
                 ),
-                onChanged: (String value) {
-                  _password = value;
-                },
-              ),
-              SwitchListTile(
-                title: Text('Accept terms'),
-                value: _acceptTerms,
-                onChanged: (bool value) {
-                  setState(() {
-                    _acceptTerms = value;
-                  });
-                },
-              ),
-              SizedBox(height: 15.0),
-              RaisedButton(
-                child: Text('LOGIN'),
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context,
-                      '/products'); //se remplaza completamente la pagina actual
-                },
-              )
-            ],
+                SwitchListTile(
+                  title: Text('Accept terms'),
+                  activeColor: Theme.of(context).primaryColor,
+                  value: _acceptTerms,
+                  onChanged: (bool value) {
+                    setState(() {
+                      _acceptTerms = value;
+                    });
+                  },
+                ),
+                SizedBox(height: 15.0),
+                RaisedButton(
+                  color: Theme.of(context).primaryColor,
+                  child: Text('LOGIN', style: TextStyle(color: Colors.white)),
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context,
+                        '/products'); //se remplaza completamente la pagina actual
+                  },
+                )
+              ],
+            ),
           ),
         ),
       ),
