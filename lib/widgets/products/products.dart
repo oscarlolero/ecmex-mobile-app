@@ -1,24 +1,22 @@
 import 'package:flutter/material.dart';
 
+import 'package:scoped_model/scoped_model.dart';
+
 import './product_card.dart';
+import '../../scoped-models/products.dart';
+import '../../models/product.dart';
 
 class Products extends StatelessWidget {
-  final List<Map<String, dynamic>>
-      products; //con final, products solo se puede cambiar desde afuera, no desde adentro
-
-  Products(this.products) {
-    //constructor, shortcut, recibe y asigna propiedad a products
-    print('Products Widged Constructor');
-  }
 
 //expanded, flexible
 
-  Widget _buildProductLists() {
+  Widget _buildProductList(List<Product> products) {
     Widget productCards;
     if (products.length > 0) {
       productCards = ListView.builder(
         //para cuando habra listas muy gfrandes, de lo contrariom, solo usar ListView
-        itemBuilder: (BuildContext context, int index) => ProductCard(products[index], index),
+        itemBuilder: (BuildContext context, int index) =>
+            ProductCard(products[index], index),
         //se ejecutara dependiendo del products.length
         itemCount: products.length,
       );
@@ -37,7 +35,10 @@ class Products extends StatelessWidget {
   Widget build(BuildContext context) {
     print('Products Widged build');
 
-    return _buildProductLists();
+    return ScopedModelDescendant<ProductsModel>(
+        builder: (BuildContext context, Widget child, ProductsModel model) {
+          return _buildProductList(model.products);
+        },);
 //
 //    Widget productCard;
 //    if(products.length > 0) {
