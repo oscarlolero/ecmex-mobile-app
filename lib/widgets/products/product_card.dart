@@ -55,7 +55,8 @@ class ProductCard extends StatelessWidget {
       child: Column(
         children: <Widget>[
           //array de widgets
-          Image.asset(product.image),
+//          Image.asset(product.image),
+          Image.network(product.image),
           //para hacer espacio se puede usar SizedBox(height: 10.0),Container(margin: EdgeInsets.all(10.0), Padding()
           Container(
             margin: EdgeInsets.only(top: 10.0),

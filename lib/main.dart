@@ -28,9 +28,9 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     //se ejecutara cada vez que _products cambie
-    print('MyApp build');
+    final MainModel model = MainModel();
     return ScopedModel<MainModel>(//se crea una instancia del modelo, solo una vez en toda la app
-      model: MainModel(),
+      model: model,
       child: MaterialApp(
 //      debugShowMaterialGrid: true,
         theme: ThemeData(
@@ -41,7 +41,7 @@ class _MyAppState extends State<MyApp> {
 //      home: AuthPage(), lo mismo que la ruta '/', no s epeuden poner al mismo tiempo
         routes: {
           '/': (BuildContext context) => AuthPage(),
-          '/products': (BuildContext context) => ProductsPage(),
+          '/products': (BuildContext context) => ProductsPage(model),
           '/admin': (BuildContext context) => ProductsAdminPage(),
         },
         //se ejecuta si la ruta no fue encontrada en routes
@@ -66,7 +66,7 @@ class _MyAppState extends State<MyApp> {
         },
         onUnknownRoute: (RouteSettings settings) {
           return MaterialPageRoute(
-              builder: (BuildContext context) => ProductsPage());
+              builder: (BuildContext context) => ProductsPage(model));
         },
       ),
     );

@@ -4,8 +4,24 @@ import 'package:scoped_model/scoped_model.dart';
 import '../widgets/products/products.dart';
 import '../scoped-models/main.dart';
 
-class ProductsPage extends StatelessWidget {
+class ProductsPage extends StatefulWidget {
+  final MainModel model;
 
+  ProductsPage(this.model);
+
+@override
+  State<StatefulWidget> createState() {
+    return _ProductsPageState();
+  }
+}
+
+class _ProductsPageState extends State<ProductsPage> {
+  @override
+  void initState() {//cuando se renderiza por primera vez
+    widget.model.fetchProducts();
+
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
