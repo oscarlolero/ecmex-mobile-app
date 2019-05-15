@@ -17,7 +17,7 @@ class _ProductEditPage extends State<ProductEditPage> {
     'title': null,
     'description': null,
     'price': null,
-    'image': 'assets/food.jpg'
+    'image': 'https://diccionariodelossuenos.net/wp-content/uploads/2016/10/son%CC%83ar-con-caca-1024x666-731x475.jpg'
   };
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -102,7 +102,8 @@ class _ProductEditPage extends State<ProductEditPage> {
         _formData['description'],
         _formData['image'],
         _formData['price'],
-      );
+      ).then((_) => Navigator.pushReplacementNamed(context, '/products')
+          .then((_) => setSelectedProduct(null))); //_ ignore value);
     }
   }
 

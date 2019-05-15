@@ -19,11 +19,11 @@ class ProductCard extends StatelessWidget {
       alignment: MainAxisAlignment.center,
       children: <Widget>[
         IconButton(
-          color: Colors.purple,
-          icon: Icon(Icons.info),
-          onPressed: () => Navigator.pushNamed(context, '/product/' + productIndex.toString())
-          ),
-          //push regresara un future que sera un boolean
+            color: Colors.purple,
+            icon: Icon(Icons.info),
+            onPressed: () => Navigator.pushNamed(
+                context, '/product/' + productIndex.toString())),
+        //push regresara un future que sera un boolean
 //          onPressed: () => Navigator.pushNamed<bool>(context, '/product/' + productIndex.toString())
 //                  .then(
 //                (bool value) {
@@ -33,18 +33,19 @@ class ProductCard extends StatelessWidget {
 //                },
 //              ),
         ScopedModelDescendant<MainModel>(
-          builder: (BuildContext context, Widget child, MainModel model) {
-            return IconButton(
-              color: Colors.red,
-              icon: Icon(model.allProducts[productIndex].isFavorite ? Icons.favorite : Icons.favorite_border),
-              onPressed: () {
-                model.selectProduct(productIndex);
-                model.toggleFavoriteProduct();
-                model.selectProduct(null);
-              },
-            );
-          }
-        ),
+            builder: (BuildContext context, Widget child, MainModel model) {
+          return IconButton(
+            color: Colors.red,
+            icon: Icon(model.allProducts[productIndex].isFavorite
+                ? Icons.favorite
+                : Icons.favorite_border),
+            onPressed: () {
+              model.selectProduct(productIndex);
+              model.toggleFavoriteProduct();
+              model.selectProduct(null);
+            },
+          );
+        }),
       ],
     );
   }
@@ -56,7 +57,12 @@ class ProductCard extends StatelessWidget {
         children: <Widget>[
           //array de widgets
 //          Image.asset(product.image),
-          Image.network(product.image),
+          FadeInImage(
+            image: NetworkImage(product.image),
+            height: 300.0,
+            fit: BoxFit.cover,//para que no se distorsione la imagen
+            placeholder: AssetImage('assets/food.jpg'),
+          ),
           //para hacer espacio se puede usar SizedBox(height: 10.0),Container(margin: EdgeInsets.all(10.0), Padding()
           Container(
             margin: EdgeInsets.only(top: 10.0),

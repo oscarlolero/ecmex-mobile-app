@@ -20,7 +20,7 @@ mixin ConnectedProductsModel on Model {
       'title': title,
       'description': description,
       'image':
-      'https://diccionariodelossuenos.net/wp-content/uploads/2016/10/son%CC%83ar-con-caca-1024x666-731x475.jpg',
+          'https://diccionariodelossuenos.net/wp-content/uploads/2016/10/son%CC%83ar-con-caca-1024x666-731x475.jpg',
       'price': price,
       'username': _authenticatedUser.username,
       'userid': _authenticatedUser.id
@@ -83,22 +83,52 @@ mixin ProductsModel on ConnectedProductsModel {
     return _showFavorites;
   }
 
-  void updateProduct(
+  Future<Null> updateProduct(
       String title, String description, String image, double price) {
-    final Product updatedProduct = Product(
-        title: title,
-        description: description,
-        price: price,
-        image: image,
-        username: selectedProduct.username,
-        userid: selectedProduct.userid);
-    _products[selectedProductIndex] = updatedProduct;
-    notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
+    _isLoading = true;
+    notifyListeners();
+    final Map<String, dynamic> updateData = {
+      'title': title,
+      'description': description,
+      'image':
+          'https://diccionariodelossuenos.net/wp-content/uploads/2016/10/son%CC%83ar-con-caca-1024x666-731x475.jpg',
+      'price': price,
+      'username': selectedProduct.username,
+      'userid': selectedProduct.userid
+    };
+    return http
+        .put(
+            'https://flutter-products-3e91e.firebaseio.com/products/${selectedProduct.id}.json',
+            body: json.encode(updateData))
+        .then((http.Response response) {
+      _isLoading = false;
+      final Product updatedProduct = Product(
+          id: selectedProduct.id,
+          title: title,
+          description: description,
+          price: price,
+          image: image,
+          username: selectedProduct.username,
+          userid: selectedProduct.userid);
+      _products[selectedProductIndex] =
+          updatedProduct; //no es necesario porque se re genera la lista
+      notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
+    });
   }
 
   void deleteProduct() {
+    _isLoading = true;
+    final deletedProductId = selectedProduct.id;
     _products.removeAt(selectedProductIndex);
-    notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
+    _selProductIndex = null;
+    notifyListeners();
+    http
+        .delete(
+            'https://flutter-products-3e91e.firebaseio.com/products/${deletedProductId}.json')
+        .then((http.Response response) {
+      _isLoading = false;
+      notifyListeners();
+    });
   }
 
   void selectProduct(int index) {
@@ -109,23 +139,21 @@ mixin ProductsModel on ConnectedProductsModel {
     }
   }
 
-  void fetchProducts() {
-    _isLoading =  true;
+  Future<Null> fetchProducts() {
+    _isLoading = true;
     notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
-    http
+    return http
         .get('https://flutter-products-3e91e.firebaseio.com/products.json')
         .then((http.Response response) {
       final List<Product> fetchedproductList = [];
-      final Map<String, dynamic> productListData =
-          json.decode(response.body);
-      if(productListData == null) {
+      final Map<String, dynamic> productListData = json.decode(response.body);
+      if (productListData == null) {
         _isLoading = false;
         notifyListeners();
         return;
       }
 
-      productListData
-          .forEach((String productId, dynamic productData) {
+      productListData.forEach((String productId, dynamic productData) {
         final Product product = Product(
             id: productId,
             title: productData['title'],
@@ -164,8 +192,6 @@ mixin ProductsModel on ConnectedProductsModel {
     notifyListeners();
   }
 }
-
-
 
 mixin UserModel on ConnectedProductsModel {
   void login(String username, String password) {

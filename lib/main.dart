@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
         routes: {
           '/': (BuildContext context) => AuthPage(),
           '/products': (BuildContext context) => ProductsPage(model),
-          '/admin': (BuildContext context) => ProductsAdminPage(),
+          '/admin': (BuildContext context) => ProductsAdminPage(model),
         },
         //se ejecuta si la ruta no fue encontrada en routes
         onGenerateRoute: (RouteSettings settings) {

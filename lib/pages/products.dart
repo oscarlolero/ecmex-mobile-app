@@ -9,7 +9,7 @@ class ProductsPage extends StatefulWidget {
 
   ProductsPage(this.model);
 
-@override
+  @override
   State<StatefulWidget> createState() {
     return _ProductsPageState();
   }
@@ -17,7 +17,8 @@ class ProductsPage extends StatefulWidget {
 
 class _ProductsPageState extends State<ProductsPage> {
   @override
-  void initState() {//cuando se renderiza por primera vez
+  void initState() {
+    //cuando se renderiza por primera vez
     widget.model.fetchProducts();
 
     super.initState();
@@ -25,17 +26,26 @@ class _ProductsPageState extends State<ProductsPage> {
 
   Widget _buildProductsList() {
     return ScopedModelDescendant<MainModel>(
-      builder: (BuildContext context, Widget child, MainModel model) {
-          Widget content =  Center(child: Text('No products found.'),);
-          if(model.displayedProducts.length > 0 && !model.isLoading) {
-            content = Products();
-          } else if(model.isLoading) {
-            content = Center(child: CircularProgressIndicator(backgroundColor: Colors.deepOrange,));
-          }
-        return content;
+        builder: (BuildContext context, Widget child, MainModel model) {
+      Widget content = Center(
+        child: Text('No products found.'),
+      );
+      if (model.displayedProducts.length > 0 && !model.isLoading) {
+        content = Products();
+      } else if (model.isLoading) {
+        content = Center(
+            child: CircularProgressIndicator(
+          backgroundColor: Colors.deepOrange,
+        ));
       }
-    );
+      return RefreshIndicator(
+        child: content,
+        color: Colors.deepOrange,
+        onRefresh: model.fetchProducts,
+      );
+    });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,15 +70,16 @@ class _ProductsPageState extends State<ProductsPage> {
         title: Text('EasyList'),
         actions: <Widget>[
           ScopedModelDescendant<MainModel>(
-            builder: (BuildContext context, Widget child, MainModel model) {
-              return IconButton(
-                icon: Icon(model.displayFavoritesOnly ? Icons.favorite : Icons.favorite_border),
-                onPressed: () {
-                  model.toggleDisplayMode();
-                },
-              );
-            }
-          )
+              builder: (BuildContext context, Widget child, MainModel model) {
+            return IconButton(
+              icon: Icon(model.displayFavoritesOnly
+                  ? Icons.favorite
+                  : Icons.favorite_border),
+              onPressed: () {
+                model.toggleDisplayMode();
+              },
+            );
+          })
         ],
       ),
       body: _buildProductsList(),
