@@ -80,7 +80,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         });
   }
 
-  void _submitForm(Function addProduct, Function updateProduct,
+  void _submitForm(Function addProduct, Function updateProduct, Function setSelectedProduct,
       [int selectedProductIndex]) {
     if (!_formKey.currentState.validate()) {
       return; //detener ejecucion
@@ -103,7 +103,7 @@ class _ProductEditPage extends State<ProductEditPage> {
       );
     }
 
-    Navigator.pushReplacementNamed(context, '/products');
+    Navigator.pushReplacementNamed(context, '/products').then((_) => setSelectedProduct(null)); //_ ignore value
   }
 
   Widget _buildSubmitButton() {
@@ -116,8 +116,8 @@ class _ProductEditPage extends State<ProductEditPage> {
           onPressed: () => _submitForm(
               model.addProduct,
               model.updateProduct,
-              model
-                  .selectedProductIndex), //si no se esta editando se pasara null
+              model.selectProduct,
+              model.selectedProductIndex), //si no se esta editando se pasara null
         );
       },
     );
