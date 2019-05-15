@@ -32,7 +32,6 @@ class ProductCard extends StatelessWidget {
 //                  }
 //                },
 //              ),
-
         ScopedModelDescendant<MainModel>(
           builder: (BuildContext context, Widget child, MainModel model) {
             return IconButton(
@@ -69,6 +68,7 @@ class ProductCard extends StatelessWidget {
             ),
           ),
           AdressTag('Union Square, San Francisco'),
+          Text(product.username),
           _buildActionButtons(context),
         ],
       ),

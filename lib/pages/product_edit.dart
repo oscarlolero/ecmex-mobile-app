@@ -6,7 +6,6 @@ import '../models/product.dart';
 import '../scoped-models/main.dart';
 
 class ProductEditPage extends StatefulWidget {
-
   @override
   State<StatefulWidget> createState() {
     return _ProductEditPage();
@@ -68,8 +67,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         decoration: InputDecoration(
           labelText: 'Price',
         ),
-        initialValue:
-            product == null ? '' : product.price.toString(),
+        initialValue: product == null ? '' : product.price.toString(),
         validator: (String value) {
           //if(value.trim().length <= 0) {
           if (value.isEmpty ||
@@ -82,25 +80,27 @@ class _ProductEditPage extends State<ProductEditPage> {
         });
   }
 
-  void _submitForm(Function addProduct, Function updateProduct, [int selectedProductIndex]) {
+  void _submitForm(Function addProduct, Function updateProduct,
+      [int selectedProductIndex]) {
     if (!_formKey.currentState.validate()) {
       return; //detener ejecucion
     }
     _formKey.currentState
         .save(); //cada vez que se llame savem se ejecuta el onSaved para cada textformfield
     if (selectedProductIndex == null) {
-      addProduct(Product(
-          title: _formData['title'],
-          description: _formData['description'],
-          price: _formData['price'],
-          image: _formData['image']));
+      addProduct(
+        _formData['title'],
+        _formData['description'],
+        _formData['image'],
+        _formData['price'],
+      );
     } else {
       updateProduct(
-          Product(
-              title: _formData['title'],
-              description: _formData['description'],
-              price: _formData['price'],
-              image: _formData['image']));
+        _formData['title'],
+        _formData['description'],
+        _formData['image'],
+        _formData['price'],
+      );
     }
 
     Navigator.pushReplacementNamed(context, '/products');
@@ -113,7 +113,11 @@ class _ProductEditPage extends State<ProductEditPage> {
           child: Text('Save'),
           color: Theme.of(context).primaryColor,
           textColor: Colors.white,
-          onPressed: () => _submitForm(model.addProduct, model.updateProduct, model.selectedProductIndex),//si no se esta editando se pasara null
+          onPressed: () => _submitForm(
+              model.addProduct,
+              model.updateProduct,
+              model
+                  .selectedProductIndex), //si no se esta editando se pasara null
         );
       },
     );
@@ -168,18 +172,18 @@ class _ProductEditPage extends State<ProductEditPage> {
   //
   @override
   Widget build(BuildContext context) {
-
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
-        final Widget pageContent = _buildPageContent(context, model.selectedProduct);
+        final Widget pageContent =
+            _buildPageContent(context, model.selectedProduct);
         return model.selectedProductIndex == null
             ? pageContent
             : Scaffold(
-          appBar: AppBar(
-            title: Text('Edit product'),
-          ),
-          body: pageContent,
-        );
+                appBar: AppBar(
+                  title: Text('Edit product'),
+                ),
+                body: pageContent,
+              );
       },
     );
   }

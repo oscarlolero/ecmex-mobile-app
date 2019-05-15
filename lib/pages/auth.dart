@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
+
+import '../scoped-models/main.dart';
 
 class AuthPage extends StatefulWidget {
   @override
@@ -8,10 +11,14 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPage extends State<AuthPage> {
-  String _username, _password;
+  final Map<String, dynamic> _formData = {
+    'username': null,
+    'password': null
+  };
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _acceptTerms = false;
 
-  _buildBackgroundImage() {
+  BoxDecoration _buildBackgroundImage() {
     return BoxDecoration(
       image: DecorationImage(
         colorFilter:
@@ -23,22 +30,32 @@ class _AuthPage extends State<AuthPage> {
   }
 
   Widget _buildUsernameTextField() {
-    return TextField(
+    return TextFormField(
       decoration: InputDecoration(
           labelText: 'Username', filled: true, fillColor: Colors.white),
-      onChanged: (String value) {
-        _username = value;
+      validator: (String value) {
+        if(value.isEmpty) {
+          return 'Please enter a valid username.';
+        }
+      },
+      onSaved: (String value) {
+        _formData['username'] = value;
       },
     );
   }
 
   Widget _buildUPasswordTextField() {
-    return TextField(
+    return TextFormField(
       obscureText: true,
       decoration: InputDecoration(
           labelText: 'Password', filled: true, fillColor: Colors.white),
-      onChanged: (String value) {
-        _password = value;
+      validator: (String value) {
+        if (value.isEmpty || value.length < 3) {
+          return 'Invalid password.';
+        }
+      },
+      onSaved: (String value) {
+        _formData['password'] = value;
       },
     );
   }
@@ -56,7 +73,12 @@ class _AuthPage extends State<AuthPage> {
     );
   }
 
-  void _submitForm() {
+  void _submitForm(Function login) {
+    if (!_formKey.currentState.validate()) {
+      return;
+    }
+    _formKey.currentState.save();
+    login(_formData['username'], _formData['password']);
     Navigator.pushReplacementNamed(
         context, '/products'); //se remplaza completamente la pagina actual
   }
@@ -80,19 +102,26 @@ class _AuthPage extends State<AuthPage> {
           child: SingleChildScrollView(
             child: Container(// MediaQuery.of(context).orientation == Orientation.portrait ?
               width: targetWidth,
-              child: Column(
-                children: <Widget>[
-                  _buildUsernameTextField(),
-                  SizedBox(height: 10.0),
-                  _buildUPasswordTextField(),
-                  _buildAcceptTermsSwitch(),
-                  SizedBox(height: 15.0),
-                  RaisedButton(
-                    color: Theme.of(context).primaryColor,
-                    child: Text('LOGIN', style: TextStyle(color: Colors.white)),
-                    onPressed: _submitForm,
-                  ),
-                ],
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    _buildUsernameTextField(),
+                    SizedBox(height: 10.0),
+                    _buildUPasswordTextField(),
+                    _buildAcceptTermsSwitch(),
+                    SizedBox(height: 15.0),
+                    ScopedModelDescendant<MainModel>(
+                      builder: (BuildContext context, Widget snapshot, MainModel model) {
+                        return RaisedButton(
+                          color: Theme.of(context).primaryColor,
+                          child: Text('LOGIN', style: TextStyle(color: Colors.white)),
+                          onPressed: () => _submitForm(model.login), //se añade el arrow y () para que se ejecute cuando se ejecute la funcion y no cuando se haga el build
+                        );
+                      }
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
