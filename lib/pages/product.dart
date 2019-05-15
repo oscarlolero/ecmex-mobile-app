@@ -4,7 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../widgets/ui_elements/title_default.dart';
 import '../models/product.dart';
-import '../scoped-models/products.dart';
+import '../scoped-models/main.dart';
 
 class ProductPage extends StatelessWidget {
   final int productIndex;
@@ -67,8 +67,8 @@ class ProductPage extends StatelessWidget {
   //},child:
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ProductsModel>(
-      builder: (BuildContext context, Widget child, ProductsModel model) {
+    return ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, Widget child, MainModel model) {
         final Product product = model.products[productIndex];
         return Scaffold(
           appBar: AppBar(title: Text(product.title)),

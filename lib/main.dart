@@ -7,7 +7,7 @@ import './pages/auth.dart';
 import './pages/products_admin.dart';
 import './pages/products.dart';
 import './pages/product.dart';
-import './scoped-models/products.dart';
+import './scoped-models/main.dart';
 
 //shortcut: void main() => runApp(MyApp());
 void main() {
@@ -29,8 +29,8 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     //se ejecutara cada vez que _products cambie
     print('MyApp build');
-    return ScopedModel<ProductsModel>(//se crea una instancia del modelo, solo una vez en toda la app
-      model: ProductsModel(),
+    return ScopedModel<MainModel>(//se crea una instancia del modelo, solo una vez en toda la app
+      model: MainModel(),
       child: MaterialApp(
 //      debugShowMaterialGrid: true,
         theme: ThemeData(
