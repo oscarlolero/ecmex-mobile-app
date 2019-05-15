@@ -58,7 +58,7 @@ class _MyAppState extends State<MyApp> {
             return MaterialPageRoute<bool>(
               //regresara un bool
               builder: (BuildContext context) =>
-                  ProductPage(null, null, null, null),
+                  ProductPage(index),
             );
           }
 
