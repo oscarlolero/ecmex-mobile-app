@@ -7,7 +7,6 @@ import '../../models/product.dart';
 import '../../scoped-models/main.dart';
 
 class Products extends StatelessWidget {
-
 //expanded, flexible
 
   Widget _buildProductList(List<Product> products) {
@@ -22,7 +21,7 @@ class Products extends StatelessWidget {
       );
     } else {
       //manera mas elegante y de facil lectura en ves de ternary
-      productCards = Center(child: Text('No products found, please add some.'));
+      productCards = Container();
 
       //Si no se quiere regresar nada, anque sea se debe de usar
       // productCards = Container();
@@ -36,9 +35,10 @@ class Products extends StatelessWidget {
     print('Products Widged build');
 
     return ScopedModelDescendant<MainModel>(
-        builder: (BuildContext context, Widget child, MainModel model) {
-          return _buildProductList(model.displayedProducts);
-        },);
+      builder: (BuildContext context, Widget child, MainModel model) {
+        return _buildProductList(model.displayedProducts);
+      },
+    );
 //
 //    Widget productCard;
 //    if(products.length > 0) {

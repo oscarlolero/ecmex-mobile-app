@@ -22,6 +22,20 @@ class _ProductsPageState extends State<ProductsPage> {
 
     super.initState();
   }
+
+  Widget _buildProductsList() {
+    return ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, Widget child, MainModel model) {
+          Widget content =  Center(child: Text('No products found.'),);
+          if(model.displayedProducts.length > 0 && !model.isLoading) {
+            content = Products();
+          } else if(model.isLoading) {
+            content = Center(child: CircularProgressIndicator(backgroundColor: Colors.deepOrange,));
+          }
+        return content;
+      }
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,7 +71,7 @@ class _ProductsPageState extends State<ProductsPage> {
           )
         ],
       ),
-      body: Products(),
+      body: _buildProductsList(),
     );
   }
 }

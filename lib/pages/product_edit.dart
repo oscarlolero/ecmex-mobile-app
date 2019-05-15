@@ -80,7 +80,8 @@ class _ProductEditPage extends State<ProductEditPage> {
         });
   }
 
-  void _submitForm(Function addProduct, Function updateProduct, Function setSelectedProduct,
+  void _submitForm(
+      Function addProduct, Function updateProduct, Function setSelectedProduct,
       [int selectedProductIndex]) {
     if (!_formKey.currentState.validate()) {
       return; //detener ejecucion
@@ -93,7 +94,8 @@ class _ProductEditPage extends State<ProductEditPage> {
         _formData['description'],
         _formData['image'],
         _formData['price'],
-      );
+      ).then((_) => Navigator.pushReplacementNamed(context, '/products')
+          .then((_) => setSelectedProduct(null))); //_ ignore value);
     } else {
       updateProduct(
         _formData['title'],
@@ -102,22 +104,25 @@ class _ProductEditPage extends State<ProductEditPage> {
         _formData['price'],
       );
     }
-
-    Navigator.pushReplacementNamed(context, '/products').then((_) => setSelectedProduct(null)); //_ ignore value
   }
 
   Widget _buildSubmitButton() {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
-        return RaisedButton(
-          child: Text('Save'),
-          color: Theme.of(context).primaryColor,
-          textColor: Colors.white,
-          onPressed: () => _submitForm(
-              model.addProduct,
-              model.updateProduct,
-              model.selectProduct,
-              model.selectedProductIndex), //si no se esta editando se pasara null
+        return Center(
+          child: model.isLoading
+              ? CircularProgressIndicator(backgroundColor: Colors.deepOrange)
+              : RaisedButton(
+                  child: Text('Save'),
+                  color: Theme.of(context).primaryColor,
+                  textColor: Colors.white,
+                  onPressed: () => _submitForm(
+                      model.addProduct,
+                      model.updateProduct,
+                      model.selectProduct,
+                      model
+                          .selectedProductIndex), //si no se esta editando se pasara null
+                ),
         );
       },
     );

@@ -6,6 +6,51 @@ import 'package:http/http.dart' as http;
 import '../models/product.dart';
 import '../models/user.dart';
 
+mixin ConnectedProductsModel on Model {
+  List<Product> _products = [];
+  int _selProductIndex;
+  User _authenticatedUser;
+  bool _isLoading = false;
+
+  Future<Null> addProduct(
+      String title, String description, String image, double price) {
+    _isLoading = true;
+    notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
+    final Map<String, dynamic> productData = {
+      'title': title,
+      'description': description,
+      'image':
+      'https://diccionariodelossuenos.net/wp-content/uploads/2016/10/son%CC%83ar-con-caca-1024x666-731x475.jpg',
+      'price': price,
+      'username': _authenticatedUser.username,
+      'userid': _authenticatedUser.id
+    };
+//    http://192.168.0.10:3000/test
+    return http.post(
+      'https://flutter-products-3e91e.firebaseio.com/products.json',
+      body: json.encode(productData),
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+      },
+    ).then((http.Response response) {
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Product newProduct = Product(
+          id: responseData['name'],
+          title: title,
+          description: description,
+          price: price,
+          image: image,
+          username: _authenticatedUser.username,
+          userid: _authenticatedUser.id);
+
+      _products.add(newProduct);
+      _isLoading = false;
+      notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
+    });
+  }
+}
+
 mixin ProductsModel on ConnectedProductsModel {
   bool _showFavorites = false;
 
@@ -65,12 +110,20 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   void fetchProducts() {
+    _isLoading =  true;
+    notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
     http
         .get('https://flutter-products-3e91e.firebaseio.com/products.json')
         .then((http.Response response) {
       final List<Product> fetchedproductList = [];
       final Map<String, dynamic> productListData =
           json.decode(response.body);
+      if(productListData == null) {
+        _isLoading = false;
+        notifyListeners();
+        return;
+      }
+
       productListData
           .forEach((String productId, dynamic productData) {
         final Product product = Product(
@@ -84,6 +137,7 @@ mixin ProductsModel on ConnectedProductsModel {
         fetchedproductList.add(product);
       });
       _products = fetchedproductList;
+      _isLoading = false;
       notifyListeners();
     });
   }
@@ -111,46 +165,7 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 }
 
-mixin ConnectedProductsModel on Model {
-  List<Product> _products = [];
-  int _selProductIndex;
-  User _authenticatedUser;
 
-  void addProduct(
-      String title, String description, String image, double price) {
-    final Map<String, dynamic> productData = {
-      'title': title,
-      'description': description,
-      'image':
-          'https://diccionariodelossuenos.net/wp-content/uploads/2016/10/son%CC%83ar-con-caca-1024x666-731x475.jpg',
-      'price': price,
-      'username': _authenticatedUser.username,
-      'userid': _authenticatedUser.id
-    };
-//    http://192.168.0.10:3000/test
-    http.post(
-      'https://flutter-products-3e91e.firebaseio.com/products.json',
-      body: json.encode(productData),
-      headers: {
-        "content-type": "application/json",
-        "accept": "application/json",
-      },
-    ).then((http.Response response) {
-      final Map<String, dynamic> responseData = json.decode(response.body);
-      final Product newProduct = Product(
-          id: responseData['name'],
-          title: title,
-          description: description,
-          price: price,
-          image: image,
-          username: _authenticatedUser.username,
-          userid: _authenticatedUser.id);
-
-      _products.add(newProduct);
-      notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
-    });
-  }
-}
 
 mixin UserModel on ConnectedProductsModel {
   void login(String username, String password) {
@@ -159,5 +174,11 @@ mixin UserModel on ConnectedProductsModel {
       username: username,
       password: password,
     );
+  }
+}
+
+mixin UtilityModel on ConnectedProductsModel {
+  bool get isLoading {
+    return _isLoading;
   }
 }
