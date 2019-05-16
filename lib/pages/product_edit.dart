@@ -17,7 +17,8 @@ class _ProductEditPage extends State<ProductEditPage> {
     'title': null,
     'description': null,
     'price': null,
-    'image': 'https://diccionariodelossuenos.net/wp-content/uploads/2016/10/son%CC%83ar-con-caca-1024x666-731x475.jpg'
+    'image':
+        'https://diccionariodelossuenos.net/wp-content/uploads/2016/10/son%CC%83ar-con-caca-1024x666-731x475.jpg'
   };
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -94,8 +95,28 @@ class _ProductEditPage extends State<ProductEditPage> {
         _formData['description'],
         _formData['image'],
         _formData['price'],
-      ).then((_) => Navigator.pushReplacementNamed(context, '/products')
-          .then((_) => setSelectedProduct(null))); //_ ignore value);
+      ).then((bool sucess) {
+        if (sucess) {
+          Navigator.pushReplacementNamed(context, '/products')
+              .then((_) => setSelectedProduct(null));
+        } else {
+          showDialog(
+              context: context, //ya tenemos una propiedad que guarda el context
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text('Something went wrong'),
+                  content: Text('Please try again'),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text('Close'),
+                      textColor: Colors.deepOrange,
+                      onPressed: () => Navigator.of(context).pop(),
+                    )
+                  ],
+                );
+              });
+        }
+      }); //_ ignore value);
     } else {
       updateProduct(
         _formData['title'],
@@ -182,7 +203,8 @@ class _ProductEditPage extends State<ProductEditPage> {
       builder: (BuildContext context, Widget child, MainModel model) {
         final Widget pageContent =
             _buildPageContent(context, model.selectedProduct);
-        return model.selectedProductIndex == -1 //regresa -1 si no encuentra nada el getter
+        return model.selectedProductIndex ==
+                -1 //regresa -1 si no encuentra nada el getter
             ? pageContent
             : Scaffold(
                 appBar: AppBar(
