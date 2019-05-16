@@ -13,7 +13,8 @@ mixin ConnectedProductsModel on Model {
   bool _isLoading = false;
 
   Future<bool> addProduct(
-      String title, String description, String image, double price) {
+      String title, String description, String image, double price) async {
+
     _isLoading = true;
     notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
     final Map<String, dynamic> productData = {
@@ -25,15 +26,17 @@ mixin ConnectedProductsModel on Model {
       'username': _authenticatedUser.username,
       'userid': _authenticatedUser.id
     };
+
+    try {
 //    http://192.168.0.10:3000/test
-    return http.post(
-      'https://flutter-products-3e91e.firebaseio.com/products.json',
-      body: json.encode(productData),
-      headers: {
-        "content-type": "application/json",
-        "accept": "application/json",
-      },
-    ).then((http.Response response) {
+      final http.Response response = await http.post(
+        'https://flutter-products-3e91e.firebaseio.com/products.json',
+        body: json.encode(productData),
+        headers: {
+          "content-type": "application/json",
+          "accept": "application/json",
+        },
+      );
       if (response.statusCode != 200 && response.statusCode != 201) {
         _isLoading = false;
         notifyListeners();
@@ -48,18 +51,17 @@ mixin ConnectedProductsModel on Model {
           image: image,
           username: _authenticatedUser.username,
           userid: _authenticatedUser.id);
-
       _products.add(newProduct);
       _isLoading = false;
       notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
       return true;
-    }).catchError((error) {
+
+    } catch (error) {
       _isLoading = false;
       notifyListeners();
       return false;
-    });
+    }
   }
-
 }
 
 mixin ProductsModel on ConnectedProductsModel {
