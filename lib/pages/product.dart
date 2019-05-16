@@ -7,9 +7,9 @@ import '../models/product.dart';
 import '../scoped-models/main.dart';
 
 class ProductPage extends StatelessWidget {
-  final int productIndex;
+  final Product product;
 
-  ProductPage(this.productIndex);
+  ProductPage(this.product);
 
 //  _showWarningDialog(BuildContext context) {
 //
@@ -67,28 +67,29 @@ class ProductPage extends StatelessWidget {
   //},child:
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<MainModel>(
-      builder: (BuildContext context, Widget child, MainModel model) {
-        final Product product = model.allProducts[productIndex];
-        return Scaffold(
-          appBar: AppBar(title: Text(product.title)),
-          body: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Image.network(product.image),
-              Container(
-                padding: EdgeInsets.all(10.0),
-                child: TitleDefault(product.title),
-              ),
-              _buildAdressPriceRow(product.price),
-              Container(
-                padding: EdgeInsets.all(10.0),
-                child: Text(
-                  product.description,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-
+    return Scaffold(
+      appBar: AppBar(title: Text(product.title)),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          FadeInImage(
+            image: NetworkImage(product.image),
+            height: 300.0,
+            fit: BoxFit.cover, //para que no se distorsione la imagen
+            placeholder: AssetImage('assets/food.jpg'),
+          ),
+          Container(
+            padding: EdgeInsets.all(10.0),
+            child: TitleDefault(product.title),
+          ),
+          _buildAdressPriceRow(product.price),
+          Container(
+            padding: EdgeInsets.all(10.0),
+            child: Text(
+              product.description,
+              textAlign: TextAlign.center,
+            ),
+          ),
 //                Container(
 //                  padding: EdgeInsets.all(10.0),
 //                  child: RaisedButton(
@@ -97,10 +98,8 @@ class ProductPage extends StatelessWidget {
 //                    onPressed: () => _showWarningDialog(context),
 //                  ),
 //                )
-            ],
-          ),
-        );
-      },
+        ],
+      ),
     );
   }
 }

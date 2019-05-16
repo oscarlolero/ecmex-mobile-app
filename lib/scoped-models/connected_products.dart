@@ -8,7 +8,7 @@ import '../models/user.dart';
 
 mixin ConnectedProductsModel on Model {
   List<Product> _products = [];
-  int _selProductIndex;
+  String _selProductId;
   User _authenticatedUser;
   bool _isLoading = false;
 
@@ -68,15 +68,22 @@ mixin ProductsModel on ConnectedProductsModel {
     return List.from(_products);
   }
 
-  int get selectedProductIndex {
-    return _selProductIndex;
+  int get selectedProductIndex { //regresa -1 si no encuentra nada
+    return _products.indexWhere((Product product) {
+      return product.id == _selProductId;
+    });
+  }
+  String get selectedProductId {
+    return _selProductId;
   }
 
   Product get selectedProduct {
-    if (selectedProductIndex == null) {
+    if (_selProductId == null) {
       return null;
     }
-    return _products[selectedProductIndex];
+    return _products.firstWhere((Product product) {
+      return product.id == _selProductId;
+    });
   }
 
   bool get displayFavoritesOnly {
@@ -110,6 +117,8 @@ mixin ProductsModel on ConnectedProductsModel {
           image: image,
           username: selectedProduct.username,
           userid: selectedProduct.userid);
+
+
       _products[selectedProductIndex] =
           updatedProduct; //no es necesario porque se re genera la lista
       notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
@@ -120,7 +129,7 @@ mixin ProductsModel on ConnectedProductsModel {
     _isLoading = true;
     final deletedProductId = selectedProduct.id;
     _products.removeAt(selectedProductIndex);
-    _selProductIndex = null;
+    _selProductId = null;
     notifyListeners();
     http
         .delete(
@@ -131,9 +140,9 @@ mixin ProductsModel on ConnectedProductsModel {
     });
   }
 
-  void selectProduct(int index) {
-    _selProductIndex = index;
-    if (index != null) {
+  void selectProduct(String productId) {
+    _selProductId = productId;
+    if (productId != null) {
       //https://www.udemy.com/learn-flutter-dart-to-build-ios-android-apps/learn/lecture/10840630#questions/6825196
       notifyListeners(); //This ensures, that existing pages are only immediately updated (=> re-rendered) when a product is selected, not when it's unselected.
     }
@@ -167,6 +176,7 @@ mixin ProductsModel on ConnectedProductsModel {
       _products = fetchedproductList;
       _isLoading = false;
       notifyListeners();
+      _selProductId = null;
     });
   }
 
@@ -175,6 +185,7 @@ mixin ProductsModel on ConnectedProductsModel {
     final bool newFavoriteStatus = !isCurrentlyFavorite;
     final Product updateProduct = Product(
       //unnmutable way, best way
+      id: selectedProduct.id,
       title: selectedProduct.title,
       description: selectedProduct.description,
       price: selectedProduct.price,
