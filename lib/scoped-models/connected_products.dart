@@ -56,14 +56,13 @@ mixin ProductsModel on ConnectedProductsModel {
 
   Future<bool> addProduct(
       String title, String description, String image, double price) async {
-
     _isLoading = true;
     notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
     final Map<String, dynamic> productData = {
       'title': title,
       'description': description,
       'image':
-      'https://diccionariodelossuenos.net/wp-content/uploads/2016/10/son%CC%83ar-con-caca-1024x666-731x475.jpg',
+          'https://diccionariodelossuenos.net/wp-content/uploads/2016/10/son%CC%83ar-con-caca-1024x666-731x475.jpg',
       'price': price,
       'username': _authenticatedUser.username,
       'userid': _authenticatedUser.id
@@ -84,20 +83,19 @@ mixin ProductsModel on ConnectedProductsModel {
         notifyListeners();
         return false;
       }
-      final Map<String, dynamic> responseData = json.decode(response.body);
-      final Product newProduct = Product(
-          id: responseData['name'],
-          title: title,
-          description: description,
-          price: price,
-          image: image,
-          username: _authenticatedUser.username,
-          userid: _authenticatedUser.id);
-      _products.add(newProduct);
+//      final Map<String, dynamic> responseData = json.decode(response.body);
+//      final Product newProduct = Product(
+//          id: responseData['name'],
+//          title: title,
+//          description: description,
+//          price: price,
+//          image: image,
+//          username: _authenticatedUser.username,
+//          userid: _authenticatedUser.id);
+//      _products.add(newProduct);
       _isLoading = false;
       notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
       return true;
-
     } catch (error) {
       _isLoading = false;
       notifyListeners();
@@ -124,17 +122,6 @@ mixin ProductsModel on ConnectedProductsModel {
             body: json.encode(updateData))
         .then((http.Response response) {
       _isLoading = false;
-      final Product updatedProduct = Product(
-          id: selectedProduct.id,
-          title: title,
-          description: description,
-          price: price,
-          image: image,
-          username: selectedProduct.username,
-          userid: selectedProduct.userid);
-
-      _products[selectedProductIndex] =
-          updatedProduct; //no es necesario porque se re genera la lista
       notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
       return true;
     }).catchError((error) {
@@ -164,7 +151,6 @@ mixin ProductsModel on ConnectedProductsModel {
     });
   }
 
-
   Future<Null> fetchProducts() {
     _isLoading = true;
     notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
@@ -174,6 +160,9 @@ mixin ProductsModel on ConnectedProductsModel {
       final List<Product> fetchedproductList = [];
       final Map<String, dynamic> productListData = json.decode(response.body);
       if (productListData == null) {
+        if (_products.length > 0) {
+          _products.clear();
+        }
         _isLoading = false;
         notifyListeners();
         return;
@@ -194,10 +183,12 @@ mixin ProductsModel on ConnectedProductsModel {
       _isLoading = false;
       notifyListeners();
       _selProductId = null;
-    }).catchError((error) {
-      _isLoading = false;
-      notifyListeners();
     });
+//        .catchError((error) {
+//    print(error);
+//    _isLoading = false;
+//    notifyListeners();
+//    });
   }
 
   void selectProduct(String productId) {
