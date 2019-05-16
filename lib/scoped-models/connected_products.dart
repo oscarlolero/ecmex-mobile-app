@@ -11,57 +11,6 @@ mixin ConnectedProductsModel on Model {
   String _selProductId;
   User _authenticatedUser;
   bool _isLoading = false;
-
-  Future<bool> addProduct(
-      String title, String description, String image, double price) async {
-
-    _isLoading = true;
-    notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
-    final Map<String, dynamic> productData = {
-      'title': title,
-      'description': description,
-      'image':
-          'https://diccionariodelossuenos.net/wp-content/uploads/2016/10/son%CC%83ar-con-caca-1024x666-731x475.jpg',
-      'price': price,
-      'username': _authenticatedUser.username,
-      'userid': _authenticatedUser.id
-    };
-
-    try {
-//    http://192.168.0.10:3000/test
-      final http.Response response = await http.post(
-        'https://flutter-products-3e91e.firebaseio.com/products.json',
-        body: json.encode(productData),
-        headers: {
-          "content-type": "application/json",
-          "accept": "application/json",
-        },
-      );
-      if (response.statusCode != 200 && response.statusCode != 201) {
-        _isLoading = false;
-        notifyListeners();
-        return false;
-      }
-      final Map<String, dynamic> responseData = json.decode(response.body);
-      final Product newProduct = Product(
-          id: responseData['name'],
-          title: title,
-          description: description,
-          price: price,
-          image: image,
-          username: _authenticatedUser.username,
-          userid: _authenticatedUser.id);
-      _products.add(newProduct);
-      _isLoading = false;
-      notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
-      return true;
-
-    } catch (error) {
-      _isLoading = false;
-      notifyListeners();
-      return false;
-    }
-  }
 }
 
 mixin ProductsModel on ConnectedProductsModel {
@@ -103,6 +52,57 @@ mixin ProductsModel on ConnectedProductsModel {
 
   bool get displayFavoritesOnly {
     return _showFavorites;
+  }
+
+  Future<bool> addProduct(
+      String title, String description, String image, double price) async {
+
+    _isLoading = true;
+    notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
+    final Map<String, dynamic> productData = {
+      'title': title,
+      'description': description,
+      'image':
+      'https://diccionariodelossuenos.net/wp-content/uploads/2016/10/son%CC%83ar-con-caca-1024x666-731x475.jpg',
+      'price': price,
+      'username': _authenticatedUser.username,
+      'userid': _authenticatedUser.id
+    };
+
+    try {
+//    http://192.168.0.10:3000/test
+      final http.Response response = await http.post(
+        'https://flutter-products-3e91e.firebaseio.com/products.json',
+        body: json.encode(productData),
+        headers: {
+          "content-type": "application/json",
+          "accept": "application/json",
+        },
+      );
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Product newProduct = Product(
+          id: responseData['name'],
+          title: title,
+          description: description,
+          price: price,
+          image: image,
+          username: _authenticatedUser.username,
+          userid: _authenticatedUser.id);
+      _products.add(newProduct);
+      _isLoading = false;
+      notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
+      return true;
+
+    } catch (error) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
   }
 
   Future<bool> updateProduct(
@@ -164,13 +164,6 @@ mixin ProductsModel on ConnectedProductsModel {
     });
   }
 
-  void selectProduct(String productId) {
-    _selProductId = productId;
-    if (productId != null) {
-      //https://www.udemy.com/learn-flutter-dart-to-build-ios-android-apps/learn/lecture/10840630#questions/6825196
-      notifyListeners(); //This ensures, that existing pages are only immediately updated (=> re-rendered) when a product is selected, not when it's unselected.
-    }
-  }
 
   Future<Null> fetchProducts() {
     _isLoading = true;
@@ -205,6 +198,14 @@ mixin ProductsModel on ConnectedProductsModel {
       _isLoading = false;
       notifyListeners();
     });
+  }
+
+  void selectProduct(String productId) {
+    _selProductId = productId;
+    if (productId != null) {
+      //https://www.udemy.com/learn-flutter-dart-to-build-ios-android-apps/learn/lecture/10840630#questions/6825196
+      notifyListeners(); //This ensures, that existing pages are only immediately updated (=> re-rendered) when a product is selected, not when it's unselected.
+    }
   }
 
   void toggleFavoriteProduct() {
