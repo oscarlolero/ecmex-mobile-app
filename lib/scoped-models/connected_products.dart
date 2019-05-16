@@ -71,7 +71,7 @@ mixin ProductsModel on ConnectedProductsModel {
     try {
 //    http://192.168.0.10:3000/test
       final http.Response response = await http.post(
-        'https://flutter-products-3e91e.firebaseio.com/products.json',
+        'http://192.168.0.10:3000/addproduct',
         body: json.encode(productData),
         headers: {
           "content-type": "application/json",
@@ -168,12 +168,14 @@ mixin ProductsModel on ConnectedProductsModel {
         return;
       }
 
+
       productListData.forEach((String productId, dynamic productData) {
+
         final Product product = Product(
             id: productId,
             title: productData['title'],
             description: productData['description'],
-            price: productData['price'],
+            price: double.parse(productData['price'].toString()),
             image: productData['image'],
             username: productData['username'],
             userid: productData['userid']);
