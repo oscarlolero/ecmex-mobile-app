@@ -1,6 +1,3 @@
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -35,11 +32,12 @@ class _AuthPage extends State<AuthPage> {
   Widget _buildUsernameTextField() {
     return TextFormField(
       decoration: InputDecoration(
-          labelText: 'Username', filled: true, fillColor: Colors.white),
+          labelText: 'Usuario', filled: true, fillColor: Colors.white),
       validator: (String value) {
-        if(value.isEmpty) {
-          return 'Please enter a valid username.';
-        }
+        //TODO: Activar validaciones de login
+//        if(value.isEmpty) {
+//          return 'Please enter a valid username.';
+//        }
       },
       onSaved: (String value) {
         _formData['username'] = value;
@@ -51,11 +49,11 @@ class _AuthPage extends State<AuthPage> {
     return TextFormField(
       obscureText: true,
       decoration: InputDecoration(
-          labelText: 'Password', filled: true, fillColor: Colors.white),
+          labelText: 'Contraseña', filled: true, fillColor: Colors.white),
       validator: (String value) {
-        if (value.isEmpty || value.length < 3) {
-          return 'Invalid password.';
-        }
+//        if (value.isEmpty || value.length < 3) {
+//          return 'Invalid password.';
+//        }
       },
       onSaved: (String value) {
         _formData['password'] = value;
@@ -76,14 +74,36 @@ class _AuthPage extends State<AuthPage> {
     );
   }
 
-  void _submitForm(Function login) {
+  void _submitForm(Function login) async {
     if (!_formKey.currentState.validate()) {
       return;
     }
+
     _formKey.currentState.save();
-    login(_formData['username'], _formData['password']);
-    Navigator.pushReplacementNamed(
-        context, '/products'); //se remplaza completamente la pagina actual
+    Map<String, dynamic> serverResponse = await login(_formData['username'], _formData['password']);
+    if(serverResponse['success']){
+      Navigator.pushReplacementNamed(
+          context, '/products');
+    } else {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Ha ocurrido un error'),
+            content: Text(serverResponse['message']),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('Cerrar', style: TextStyle(color: Colors.deepOrange),),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              )
+            ],
+          );
+        },
+      );
+    }
+     //se remplaza completamente la pagina actual
   }
 
   @override
@@ -119,7 +139,9 @@ class _AuthPage extends State<AuthPage> {
                         return RaisedButton(
                           color: Theme.of(context).primaryColor,
                           child: Text('LOGIN', style: TextStyle(color: Colors.white)),
-                          onPressed: () => _submitForm(model.login), //se añade el arrow y () para que se ejecute cuando se ejecute la funcion y no cuando se haga el build
+                          onPressed: () {
+                            _submitForm(model.login);
+                            }, //se añade el arrow y () para que se ejecute cuando se ejecute la funcion y no cuando se haga el build
                         );
                       }
                     ),

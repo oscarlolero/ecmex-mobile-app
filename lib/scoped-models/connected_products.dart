@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import '../models/product.dart';
 import '../models/user.dart';
+import '../config/server.dart' as server;
 
 mixin ConnectedProductsModel on Model {
   List<Product> _products = [];
@@ -168,9 +169,7 @@ mixin ProductsModel on ConnectedProductsModel {
         return;
       }
 
-
       productListData.forEach((String productId, dynamic productData) {
-
         final Product product = Product(
             id: productId,
             title: productData['title'],
@@ -226,12 +225,47 @@ mixin ProductsModel on ConnectedProductsModel {
 }
 
 mixin UserModel on ConnectedProductsModel {
-  void login(String username, String password) {
-    _authenticatedUser = User(
-      id: 'asdasd',
-      username: username,
-      password: password,
-    );
+  Future<Map<String, dynamic>> login(String username, String password) async {
+    Map<String, String> userCredentials = {
+      'username': username,
+      'password': password
+    };
+
+    try {
+      Map<String, dynamic> responseData = {};
+      String message = 'Algo salió mal.';
+      bool success = false;
+
+      final http.Response response = await http.post(
+        '${server.serverURL}/user/login',
+        body: json.encode(userCredentials),
+        headers: {
+          "content-type": "application/json",
+          "accept": "application/json",
+        },
+      ).timeout(const Duration(seconds: 3));
+      responseData = json.decode(response.body);
+
+      if (response.statusCode == 200) {
+        success = true;
+        _authenticatedUser = User(
+          id: 'asdasd',
+          username: username,
+          password: password,
+        );
+
+      } else if (response.statusCode == 502) {
+        message = 'Error al conectar con la base de datos.';
+      } else if (response.statusCode == 401) {
+        responseData['message'] == 'USER_NOT_FOUND'
+            ? message = 'El usuario no existe.'
+            : message = 'Contraseña incorrecta.';
+      }
+
+      return {'success': success, 'message': message};
+    } catch (error) {
+      return {'success': false, 'message': 'Error al acceder al servidor.'};
+    }
   }
 }
 
