@@ -56,14 +56,14 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   Future<bool> addProduct(
-      String title, String description, String image, double price) async {
+      String title, String description, String image, int price) async {
     _isLoading = true;
     notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
     final Map<String, dynamic> productData = {
       'title': title,
       'description': description,
       'image':
-          'https://diccionariodelossuenos.net/wp-content/uploads/2016/10/son%CC%83ar-con-caca-1024x666-731x475.jpg',
+          'https://flutter.dev/assets/homepage/carousel/phone_bezel-467ab8d838e5e2d2d3f347f766173ccc365220223692215416e4ce7342f2212f.png',
       'price': price,
       'username': _authenticatedUser.username,
       'userid': _authenticatedUser.id
@@ -72,7 +72,7 @@ mixin ProductsModel on ConnectedProductsModel {
     try {
 //    http://192.168.0.10:3000/test
       final http.Response response = await http.post(
-        'http://192.168.0.10:3000/addproduct',
+        'http://192.168.0.10:3000/product',
         body: json.encode(productData),
         headers: {
           "content-type": "application/json",
@@ -105,14 +105,14 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   Future<bool> updateProduct(
-      String title, String description, String image, double price) {
+      String title, String description, String image, int price) {
     _isLoading = true;
     notifyListeners();
     final Map<String, dynamic> updateData = {
       'title': title,
       'description': description,
       'image':
-          'https://diccionariodelossuenos.net/wp-content/uploads/2016/10/son%CC%83ar-con-caca-1024x666-731x475.jpg',
+          'https://flutter.dev/assets/homepage/carousel/phone_bezel-467ab8d838e5e2d2d3f347f766173ccc365220223692215416e4ce7342f2212f.png',
       'price': price,
       'username': selectedProduct.username,
       'userid': selectedProduct.userid
@@ -174,7 +174,7 @@ mixin ProductsModel on ConnectedProductsModel {
             id: productId,
             title: productData['title'],
             description: productData['description'],
-            price: double.parse(productData['price'].toString()),
+            price: productData['price'],
             image: productData['image'],
             username: productData['username'],
             userid: productData['userid']);
@@ -225,6 +225,10 @@ mixin ProductsModel on ConnectedProductsModel {
 }
 
 mixin UserModel on ConnectedProductsModel {
+  bool get isAdmin {
+    return _authenticatedUser.isAdmin;
+  }
+
   Future<Map<String, dynamic>> login(String username, String password) async {
     Map<String, String> userCredentials = {
       'username': username,
@@ -251,7 +255,7 @@ mixin UserModel on ConnectedProductsModel {
         _authenticatedUser = User(
           id: 'asdasd',
           username: username,
-          password: password,
+          isAdmin: responseData['isAdmin'],
         );
 
       } else if (response.statusCode == 502) {

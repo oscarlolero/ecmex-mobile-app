@@ -32,7 +32,7 @@ class _AuthPage extends State<AuthPage> {
   Widget _buildUsernameTextField() {
     return TextFormField(
       decoration: InputDecoration(
-          labelText: 'Usuario', filled: true, fillColor: Colors.white),
+          labelText: 'Usuario', filled: true),
       validator: (String value) {
         //TODO: Activar validaciones de login
 //        if(value.isEmpty) {
@@ -49,7 +49,7 @@ class _AuthPage extends State<AuthPage> {
     return TextFormField(
       obscureText: true,
       decoration: InputDecoration(
-          labelText: 'Contraseña', filled: true, fillColor: Colors.white),
+          labelText: 'Contraseña', filled: true),
       validator: (String value) {
 //        if (value.isEmpty || value.length < 3) {
 //          return 'Invalid password.';
@@ -138,7 +138,7 @@ class _AuthPage extends State<AuthPage> {
                       builder: (BuildContext context, Widget snapshot, MainModel model) {
                         return RaisedButton(
                           color: Theme.of(context).primaryColor,
-                          child: Text('LOGIN', style: TextStyle(color: Colors.white)),
+                          child: Text('LOGIN'),
                           onPressed: () {
                             _submitForm(model.login);
                             }, //se añade el arrow y () para que se ejecute cuando se ejecute la funcion y no cuando se haga el build
