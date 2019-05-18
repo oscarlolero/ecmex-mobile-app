@@ -11,11 +11,11 @@ class PriceTag extends StatelessWidget {
       margin: EdgeInsets.only(top: 5.0),
       padding: EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.5),
       child: Text(
-        'USD\$' + price,
+        '\$${price} MXN',
         style: TextStyle(color: Colors.white, fontFamily: 'Oswald'),
       ),
       decoration: BoxDecoration(
-          color: Colors.purple,
+          color: Theme.of(context).accentColor,
           borderRadius: BorderRadius.circular(5.0)),
     );
   }

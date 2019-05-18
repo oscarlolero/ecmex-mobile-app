@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import '../widgets/ui_elements/title_default.dart';
 import '../models/product.dart';
 import '../scoped-models/main.dart';
 
@@ -38,26 +37,81 @@ class ProductPage extends StatelessWidget {
 //        });
 //  }
 
-  Widget _buildAdressPriceRow(double price) {
+  Widget _buildTopInfo(BuildContext context, int price) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Text(
-          'Union Square, San Francisco',
-          style: TextStyle(color: Colors.grey),
-        ),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 5.0),
-          child: Text(
-            '|',
-            style: TextStyle(color: Colors.grey),
-          ),
+          'Samsung',
+          style: TextStyle(fontSize: 20.0, color: Colors.grey),
         ),
         Text(
-          '\$${price.toString()}',
-          style: TextStyle(color: Colors.grey),
+          '\$699',
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 32,
+              color: Theme.of(context).accentColor),
         ),
       ],
+    );
+  }
+
+  Widget _buildMainProductInfo() {
+    return Column(
+      children: <Widget>[
+        Text(
+          product.title,
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40.0),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionButtons(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 20.0),
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 25.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            RaisedButton(
+              onPressed: () {},
+              shape: new RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(30.0)),
+              padding: EdgeInsets.symmetric(horizontal: 50.0, vertical: 15.0),
+              textColor: Colors.white,
+              elevation: 6.0,
+              child: Text(
+                'COMPRAR AHORA',
+                style: TextStyle(
+                    letterSpacing: 1.5,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+            ScopedModelDescendant<MainModel>(
+                builder: (BuildContext context, Widget child, MainModel model) {
+                  return RaisedButton(
+                  onPressed: () {
+                    model.addCartItem(product);
+                  },
+                  child: new Icon(
+                    Icons.add_shopping_cart,
+                    size: 23.0,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  shape: new CircleBorder(),
+                  elevation: 4.0,
+                  colorBrightness: Theme.of(context).accentColorBrightness,
+                  color: Theme.of(context).accentColor,
+                  padding: const EdgeInsets.all(14.0),
+                );
+              }
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -70,26 +124,29 @@ class ProductPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text(product.title)),
       body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
+          SizedBox(height: 15.0),
           FadeInImage(
             image: NetworkImage(product.image),
             height: 300.0,
             fit: BoxFit.cover, //para que no se distorsione la imagen
             placeholder: AssetImage('assets/food.jpg'),
           ),
+          SizedBox(height: 15.0),
           Container(
-            padding: EdgeInsets.all(10.0),
-            child: TitleDefault(product.title),
-          ),
-          _buildAdressPriceRow(product.price),
-          Container(
-            padding: EdgeInsets.all(10.0),
-            child: Text(
-              product.description,
-              textAlign: TextAlign.center,
+            padding: EdgeInsets.symmetric(horizontal: 25.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _buildTopInfo(context, product.price),
+                SizedBox(height: 10.0),
+                _buildMainProductInfo(),
+                SizedBox(height: 15.0),
+                Text(product.description, style: TextStyle(fontSize: 16.0),textAlign: TextAlign.right,)
+              ],
             ),
           ),
+
 //                Container(
 //                  padding: EdgeInsets.all(10.0),
 //                  child: RaisedButton(
@@ -100,6 +157,7 @@ class ProductPage extends StatelessWidget {
 //                )
         ],
       ),
+      bottomNavigationBar: _buildActionButtons(context),
     );
   }
 }

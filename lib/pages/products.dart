@@ -24,65 +24,83 @@ class _ProductsPageState extends State<ProductsPage> {
     super.initState();
   }
 
-  Widget _buildProductsList() {
-    return ScopedModelDescendant<MainModel>(
-        builder: (BuildContext context, Widget child, MainModel model) {
-      Widget content = Center(
-        child: Text('No products found.'),
+  Widget _buildProductsList(MainModel model) {
+    Widget content = Center(
+      child: Text('No products found.'),
+    );
+    if (model.displayedProducts.length > 0 && !model.isLoading) {
+      content = Products();
+    } else if (model.isLoading) {
+      content = Center(child: CircularProgressIndicator());
+    }
+    return RefreshIndicator(
+      child: content,
+      onRefresh: model.fetchProducts,
+    );
+  }
+
+  Widget _buildTiles(MainModel model) {
+    Widget content;
+    if (model.isAdmin) {
+      Column(
+        children: <Widget>[
+          content = ListTile(
+            leading: Icon(Icons.edit),
+            title: Text('Administrar productos'),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/admin');
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.directions_bus),
+            title: Text('Proveedores'),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/providers');
+            },
+          ),
+        ],
       );
-      if (model.displayedProducts.length > 0 && !model.isLoading) {
-        content = Products();
-      } else if (model.isLoading) {
-        content = Center(
-            child: CircularProgressIndicator(
-          backgroundColor: Colors.deepOrange,
-        ));
-      }
-      return RefreshIndicator(
-        child: content,
-        color: Colors.deepOrange,
-        onRefresh: model.fetchProducts,
+    } else {
+      content = ListTile(
+        leading: Icon(Icons.contact_mail),
+        title: Text('Facturación'),
+        onTap: () {
+          Navigator.pushReplacementNamed(context, '/admin');
+        },
       );
-    });
+    }
+    return content;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: Drawer(
-        child: Column(
-          children: <Widget>[
-            AppBar(
-              automaticallyImplyLeading: false,
-              title: Text('Choose'),
-            ),
-            ListTile(
-              leading: Icon(Icons.edit),
-              title: Text('Manage products'),
-              onTap: () {
-                Navigator.pushReplacementNamed(context, '/admin');
+    return ScopedModelDescendant<MainModel>(
+        builder: (BuildContext context, Widget child, MainModel model) {
+      return Scaffold(
+        drawer: Drawer(
+          child: Column(
+            children: <Widget>[
+              AppBar(
+                automaticallyImplyLeading: false,
+                title: Text('Escoge'),
+              ),
+              _buildTiles(model),
+            ],
+          ),
+        ),
+        appBar: AppBar(
+          title: Text('ECTech'),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.shopping_cart),
+              onPressed: () {
+                Navigator.pushNamed(context, '/cart');
               },
             )
           ],
         ),
-      ),
-      appBar: AppBar(
-        title: Text('EasyList'),
-        actions: <Widget>[
-          ScopedModelDescendant<MainModel>(
-              builder: (BuildContext context, Widget child, MainModel model) {
-            return IconButton(
-              icon: Icon(model.displayFavoritesOnly
-                  ? Icons.favorite
-                  : Icons.favorite_border),
-              onPressed: () {
-                model.toggleDisplayMode();
-              },
-            );
-          })
-        ],
-      ),
-      body: _buildProductsList(),
-    );
+        body: _buildProductsList(model),
+      );
+    });
   }
 }

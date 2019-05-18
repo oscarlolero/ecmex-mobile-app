@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
 
-import '../models/product.dart';
-import '../scoped-models/main.dart';
+import '../../models/product.dart';
+import '../../scoped-models/main.dart';
 
 class ProductEditPage extends StatefulWidget {
   @override
@@ -18,7 +18,7 @@ class _ProductEditPage extends State<ProductEditPage> {
     'description': null,
     'price': null,
     'image':
-        'https://diccionariodelossuenos.net/wp-content/uploads/2016/10/son%CC%83ar-con-caca-1024x666-731x475.jpg'
+        'https://flutter.dev/assets/homepage/carousel/phone_bezel-467ab8d838e5e2d2d3f347f766173ccc365220223692215416e4ce7342f2212f.png'
   };
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -77,9 +77,10 @@ class _ProductEditPage extends State<ProductEditPage> {
           }
         },
         onSaved: (String value) {
-          _formData['price'] = double.parse(value);
+          _formData['price'] = int.parse(value);
         });
   }
+
 
   void _submitForm(
       Function addProduct, Function updateProduct, Function setSelectedProduct,
@@ -133,11 +134,11 @@ class _ProductEditPage extends State<ProductEditPage> {
       builder: (BuildContext context, Widget child, MainModel model) {
         return Center(
           child: model.isLoading
-              ? CircularProgressIndicator(backgroundColor: Colors.deepOrange)
+              ? CircularProgressIndicator()
               : RaisedButton(
                   child: Text('Save'),
                   color: Theme.of(context).primaryColor,
-                  textColor: Colors.white,
+//                  textColor: Colors.white,
                   onPressed: () => _submitForm(
                       model.addProduct,
                       model.updateProduct,

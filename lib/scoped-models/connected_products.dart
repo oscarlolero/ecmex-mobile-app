@@ -5,13 +5,65 @@ import 'package:http/http.dart' as http;
 
 import '../models/product.dart';
 import '../models/user.dart';
+import '../models/cart_item.dart';
+
 import '../config/server.dart' as server;
 
 mixin ConnectedProductsModel on Model {
   List<Product> _products = [];
+  List<CartItem> _cartItems = [];
   String _selProductId;
   User _authenticatedUser;
   bool _isLoading = false;
+}
+
+mixin CartItemModel on ConnectedProductsModel {
+  List<CartItem> get allCartItems {
+    return List.from(_cartItems);
+  }
+
+  int get getTotalPrice {
+    int total = 0;
+    if(_cartItems.length == 0) return 0;
+    _cartItems.forEach((cartItem) {
+      total += cartItem.product.price * cartItem.amount;
+    });
+    return total;
+  }
+
+  int getItemAmount(int index) {
+    return _cartItems[index].amount;
+  }
+
+  void addCartItem(Product product) {
+    //Verificar si ya esta añadido al carrito
+
+    int existingProductId, index = 0;
+    for(final cartItem in _cartItems) {
+      if (cartItem.product == product) {
+        existingProductId = index;
+        break;
+      }
+      index++;
+    }
+
+    if(existingProductId == null) {
+      final CartItem newCartItem = CartItem(
+        product: product,
+        amount: 1,
+      );
+      _cartItems.add(newCartItem);
+    } else {
+      _cartItems[existingProductId].amount += 1;
+    }
+
+  }
+
+  void deleteCartProduct(CartItem cartItem) {
+    _cartItems.remove(cartItem);
+    notifyListeners();
+  }
+
 }
 
 mixin ProductsModel on ConnectedProductsModel {
@@ -226,6 +278,8 @@ mixin ProductsModel on ConnectedProductsModel {
 
 mixin UserModel on ConnectedProductsModel {
   bool get isAdmin {
+    //TODO REMOVER ESTO ANTES DE RELEASE
+    if(_authenticatedUser.isAdmin == null) return true;
     return _authenticatedUser.isAdmin;
   }
 
@@ -253,11 +307,10 @@ mixin UserModel on ConnectedProductsModel {
       if (response.statusCode == 200) {
         success = true;
         _authenticatedUser = User(
-          id: 'asdasd',
+          id: responseData['userId'],
           username: username,
           isAdmin: responseData['isAdmin'],
         );
-
       } else if (response.statusCode == 502) {
         message = 'Error al conectar con la base de datos.';
       } else if (response.statusCode == 401) {

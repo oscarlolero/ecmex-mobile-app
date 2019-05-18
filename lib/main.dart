@@ -9,6 +9,7 @@ import './pages/products.dart';
 import './pages/product.dart';
 import './scoped-models/main.dart';
 import './models/product.dart';
+import './pages/cart.dart';
 
 //shortcut: void main() => runApp(MyApp());
 void main() {
@@ -30,20 +31,23 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     //se ejecutara cada vez que _products cambie
     final MainModel model = MainModel();
-    return ScopedModel<MainModel>(//se crea una instancia del modelo, solo una vez en toda la app
+    return ScopedModel<MainModel>(
+      //se crea una instancia del modelo, solo una vez en toda la app
       model: model,
       child: MaterialApp(
 //      debugShowMaterialGrid: true,
         theme: ThemeData(
-          primarySwatch: Colors.deepOrange,
-          accentColor: Colors.white,
-          buttonColor: Colors.deepOrange,
+          primaryColor: Colors.white,
+          accentColor: Color(0xff05039B),
+          buttonColor: Color(0xffFF5733),
+//          buttonColor: Colors.deepOrange,
         ),
 //      home: AuthPage(), lo mismo que la ruta '/', no s epeuden poner al mismo tiempo
         routes: {
           '/': (BuildContext context) => AuthPage(),
           '/products': (BuildContext context) => ProductsPage(model),
           '/admin': (BuildContext context) => ProductsAdminPage(model),
+          '/cart': (BuildContext context) => CartPage(model),
         },
         //se ejecuta si la ruta no fue encontrada en routes
         onGenerateRoute: (RouteSettings settings) {
@@ -56,14 +60,14 @@ class _MyAppState extends State<MyApp> {
 
           if (pathElements[1] == 'product') {
             final String productId = pathElements[2];
-            final Product product = model.allProducts.firstWhere((Product product) {
+            final Product product =
+                model.allProducts.firstWhere((Product product) {
               return product.id == productId;
             });
 
             return MaterialPageRoute<bool>(
               //regresara un bool
-              builder: (BuildContext context) =>
-                  ProductPage(product),
+              builder: (BuildContext context) => ProductPage(product),
             );
           }
 
