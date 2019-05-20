@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
 
-import '../../models/product.dart';
-import '../../scoped-models/main.dart';
+import '../../../models/product.dart';
+import '../../../scoped-models/main.dart';
 
 class ProductEditPage extends StatefulWidget {
   @override
@@ -18,7 +18,8 @@ class _ProductEditPage extends State<ProductEditPage> {
     'description': null,
     'price': null,
     'image':
-        'https://flutter.dev/assets/homepage/carousel/phone_bezel-467ab8d838e5e2d2d3f347f766173ccc365220223692215416e4ce7342f2212f.png'
+    'https://flutter.dev/assets/homepage/carousel/phone_bezel-467ab8d838e5e2d2d3f347f766173ccc365220223692215416e4ce7342f2212f.png',
+    'provider': null
   };
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -26,7 +27,8 @@ class _ProductEditPage extends State<ProductEditPage> {
   Widget _buildTitleTextField(Product product) {
     return TextFormField(
       decoration: InputDecoration(
-        labelText: 'Product title',
+        labelText: 'Título',
+          labelStyle: TextStyle(color: Colors.black)
       ),
 //      autovalidate: true,
       initialValue: product == null ? '' : product.title,
@@ -42,12 +44,33 @@ class _ProductEditPage extends State<ProductEditPage> {
       },
     );
   }
+  Widget _buildProviderTextField(Product product) {
+    return TextFormField(
+      decoration: InputDecoration(
+          labelText: 'Proveedor',
+          labelStyle: TextStyle(color: Colors.black)
+      ),
+//      autovalidate: true,
+      initialValue: product == null ? '' : product.title,
+      validator: (String value) {
+        //if(value.trim().length <= 0) {
+        if (value.isEmpty || value.length < 5) {
+          return 'Provider is required and should me 5+ characters long.';
+        }
+      },
+      onSaved: (String value) {
+        //No es necesario el setState, es una llamada al build inncesaria
+        _formData['provider'] = value;
+      },
+    );
+  }
 
   Widget _buildDescriptionField(Product product) {
     return TextFormField(
       maxLines: 4,
       decoration: InputDecoration(
-        labelText: 'Description',
+        labelText: 'Descripción',
+          labelStyle: TextStyle(color: Colors.black)
       ),
       initialValue: product == null ? '' : product.description,
       validator: (String value) {
@@ -66,7 +89,8 @@ class _ProductEditPage extends State<ProductEditPage> {
     return TextFormField(
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
-          labelText: 'Price',
+          labelText: 'Precio',
+            labelStyle: TextStyle(color: Colors.black)
         ),
         initialValue: product == null ? '' : product.price.toString(),
         validator: (String value) {
@@ -96,6 +120,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         _formData['description'],
         _formData['image'],
         _formData['price'],
+        _formData['provider'],
       ).then((bool sucess) {
         if (sucess) {
           Navigator.pushReplacementNamed(context, '/products')
@@ -124,6 +149,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         _formData['description'],
         _formData['image'],
         _formData['price'],
+        _formData['provider'],
       ).then((_) => Navigator.pushReplacementNamed(context, '/products')
           .then((_) => setSelectedProduct(null))); //_ ignore value);
     }
@@ -167,6 +193,7 @@ class _ProductEditPage extends State<ProductEditPage> {
           padding: EdgeInsets.symmetric(horizontal: targetPadding / 2),
           children: <Widget>[
             _buildTitleTextField(product),
+            _buildProviderTextField(product),
             _buildDescriptionField(product),
             _buildPriceTextField(product),
             //tambien se puede usar un container
@@ -209,7 +236,7 @@ class _ProductEditPage extends State<ProductEditPage> {
             ? pageContent
             : Scaffold(
                 appBar: AppBar(
-                  title: Text('Edit product'),
+                  title: Text('Editar product'),
                 ),
                 body: pageContent,
               );

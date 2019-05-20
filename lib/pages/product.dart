@@ -42,11 +42,11 @@ class ProductPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         Text(
-          'Samsung',
+          product.provider,
           style: TextStyle(fontSize: 20.0, color: Colors.grey),
         ),
         Text(
-          '\$699',
+          '\$${product.price}',
           style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 32,
@@ -79,7 +79,7 @@ class ProductPage extends StatelessWidget {
               onPressed: () {},
               shape: new RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(30.0)),
-              padding: EdgeInsets.symmetric(horizontal: 50.0, vertical: 15.0),
+              padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
               textColor: Colors.white,
               elevation: 6.0,
               child: Text(
@@ -133,18 +133,22 @@ class ProductPage extends StatelessWidget {
             placeholder: AssetImage('assets/food.jpg'),
           ),
           SizedBox(height: 15.0),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 25.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                _buildTopInfo(context, product.price),
-                SizedBox(height: 10.0),
-                _buildMainProductInfo(),
-                SizedBox(height: 15.0),
-                Text(product.description, style: TextStyle(fontSize: 16.0),textAlign: TextAlign.right,)
-              ],
-            ),
+          ScopedModelDescendant<MainModel>(
+              builder: (BuildContext context, Widget child, MainModel model) {
+                return Container(
+                padding: EdgeInsets.symmetric(horizontal: 25.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _buildTopInfo(context, product.price),
+                    SizedBox(height: 10.0),
+                    _buildMainProductInfo(),
+                    SizedBox(height: 15.0),
+                    Text(product.description, style: TextStyle(fontSize: 16.0),textAlign: TextAlign.right,)
+                  ],
+                ),
+              );
+            }
           ),
 
 //                Container(

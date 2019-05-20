@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:first_app/pages/subpage/product_edit.dart';
-import 'package:first_app/pages/subpage/product_list.dart';
+import 'package:first_app/pages/subpage/product/product_edit.dart';
+import 'package:first_app/pages/subpage/product/product_list.dart';
 
 import '../scoped-models/main.dart';
 

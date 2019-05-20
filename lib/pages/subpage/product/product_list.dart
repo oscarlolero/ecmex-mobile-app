@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-import 'package:first_app/pages/subpage/product_edit.dart';
-import '../../scoped-models/main.dart';
+import 'package:first_app/pages/subpage/product/product_edit.dart';
+import '../../../scoped-models/main.dart';
 
 class ProductListPage extends StatefulWidget {
   final MainModel model;

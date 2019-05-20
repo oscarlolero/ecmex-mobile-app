@@ -108,7 +108,7 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   Future<bool> addProduct(
-      String title, String description, String image, int price) async {
+      String title, String description, String image, int price, String provider) async {
     _isLoading = true;
     notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
     final Map<String, dynamic> productData = {
@@ -117,6 +117,7 @@ mixin ProductsModel on ConnectedProductsModel {
       'image':
           'https://flutter.dev/assets/homepage/carousel/phone_bezel-467ab8d838e5e2d2d3f347f766173ccc365220223692215416e4ce7342f2212f.png',
       'price': price,
+      'provider': provider,
       'username': _authenticatedUser.username,
       'userid': _authenticatedUser.id
     };
@@ -124,7 +125,7 @@ mixin ProductsModel on ConnectedProductsModel {
     try {
 //    http://192.168.0.10:3000/test
       final http.Response response = await http.post(
-        'http://192.168.0.10:3000/product',
+        '${server.serverURL}/product',
         body: json.encode(productData),
         headers: {
           "content-type": "application/json",
@@ -157,7 +158,7 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   Future<bool> updateProduct(
-      String title, String description, String image, int price) {
+      String title, String description, String image, int price, String provider) {
     _isLoading = true;
     notifyListeners();
     final Map<String, dynamic> updateData = {
@@ -166,6 +167,7 @@ mixin ProductsModel on ConnectedProductsModel {
       'image':
           'https://flutter.dev/assets/homepage/carousel/phone_bezel-467ab8d838e5e2d2d3f347f766173ccc365220223692215416e4ce7342f2212f.png',
       'price': price,
+      'provider': provider,
       'username': selectedProduct.username,
       'userid': selectedProduct.userid
     };
@@ -228,6 +230,7 @@ mixin ProductsModel on ConnectedProductsModel {
             description: productData['description'],
             price: productData['price'],
             image: productData['image'],
+            provider: productData['provider'],
             username: productData['username'],
             userid: productData['userid']);
         fetchedproductList.add(product);

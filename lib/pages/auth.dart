@@ -119,7 +119,8 @@ class _AuthPage extends State<AuthPage> {
     return Scaffold(
 //      appBar: AppBar(title: Text('Login')),
       body: Container(
-        decoration: _buildBackgroundImage(),
+        //decoration: _buildBackgroundImage(),
+        color: Colors.grey,
         padding: EdgeInsets.all(25.0),
         child: Center(
           child: SingleChildScrollView(

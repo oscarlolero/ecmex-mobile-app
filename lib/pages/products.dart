@@ -4,6 +4,8 @@ import 'package:scoped_model/scoped_model.dart';
 import '../widgets/products/products.dart';
 import '../scoped-models/main.dart';
 
+import '../widgets/ui_elements/admin/admin_drawer.dart';
+import '../widgets/ui_elements/user/user_drawer.dart';
 class ProductsPage extends StatefulWidget {
   final MainModel model;
 
@@ -77,17 +79,7 @@ class _ProductsPageState extends State<ProductsPage> {
     return ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model) {
       return Scaffold(
-        drawer: Drawer(
-          child: Column(
-            children: <Widget>[
-              AppBar(
-                automaticallyImplyLeading: false,
-                title: Text('Escoge'),
-              ),
-              _buildTiles(model),
-            ],
-          ),
-        ),
+        drawer: model.isAdmin ? AdminDrawer(model) : UserDrawer(model),
         appBar: AppBar(
           title: Text('ECTech'),
           actions: <Widget>[

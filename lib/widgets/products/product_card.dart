@@ -83,7 +83,7 @@ class ProductCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                AdressTag('Marca'),
+                AdressTag(product.provider),
                 SizedBox(height: 10.0)
                 //_buildActionButtons(context),
               ],
