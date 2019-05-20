@@ -4,8 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../widgets/products/products.dart';
 import '../scoped-models/main.dart';
 
-import '../widgets/ui_elements/admin/admin_drawer.dart';
-import '../widgets/ui_elements/user/user_drawer.dart';
+import '../widgets/ui_elements/drawer.dart';
 class ProductsPage extends StatefulWidget {
   final MainModel model;
 
@@ -28,7 +27,7 @@ class _ProductsPageState extends State<ProductsPage> {
 
   Widget _buildProductsList(MainModel model) {
     Widget content = Center(
-      child: Text('No products found.'),
+      child: Text('No se encontraron productos.'),
     );
     if (model.displayedProducts.length > 0 && !model.isLoading) {
       content = Products();
@@ -79,7 +78,7 @@ class _ProductsPageState extends State<ProductsPage> {
     return ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model) {
       return Scaffold(
-        drawer: model.isAdmin ? AdminDrawer(model) : UserDrawer(model),
+        drawer: DrawerWidget(model),
         appBar: AppBar(
           title: Text('ECTech'),
           actions: <Widget>[

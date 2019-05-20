@@ -5,6 +5,8 @@ import 'package:first_app/pages/subpage/product/product_list.dart';
 
 import '../scoped-models/main.dart';
 
+import '../widgets/ui_elements/drawer.dart';
+
 class ProductsAdminPage extends StatelessWidget {
   final MainModel model;
 
@@ -18,23 +20,7 @@ class ProductsAdminPage extends StatelessWidget {
           FocusScope.of(context).requestFocus(FocusNode()); //si no se pasa un node se oculta el teclado
         },
         child: Scaffold(
-          drawer: Drawer(
-            child: Column(
-              children: <Widget>[
-                AppBar(
-                  automaticallyImplyLeading: false,
-                  title: Text('Choose'),
-                ),
-                ListTile(
-                  leading: Icon(Icons.shop),
-                  title: Text('Products'),
-                  onTap: () {
-                    Navigator.pushReplacementNamed(context, '/products'); //se remplaza completamente la pagina actual
-                  },
-                ),
-              ],
-            ),
-          ),
+          drawer: DrawerWidget(model),
           appBar: AppBar(
             title: Text('Manage products'),
             bottom: TabBar(
