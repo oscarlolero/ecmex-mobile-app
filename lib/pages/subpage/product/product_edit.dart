@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
 
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 import '../../../models/product.dart';
 import '../../../scoped-models/main.dart';
 import '../../../widgets/products/image.dart';
@@ -19,7 +22,7 @@ class _ProductEditPage extends State<ProductEditPage> {
     'description': null,
     'price': null,
     'image':
-    'https://flutter.dev/assets/homepage/carousel/phone_bezel-467ab8d838e5e2d2d3f347f766173ccc365220223692215416e4ce7342f2212f.png',
+        'https://flutter.dev/assets/homepage/carousel/phone_bezel-467ab8d838e5e2d2d3f347f766173ccc365220223692215416e4ce7342f2212f.png',
     'provider': null
   };
 
@@ -28,9 +31,7 @@ class _ProductEditPage extends State<ProductEditPage> {
   Widget _buildTitleTextField(Product product) {
     return TextFormField(
       decoration: InputDecoration(
-        labelText: 'Título',
-          labelStyle: TextStyle(color: Colors.black)
-      ),
+          labelText: 'Título', labelStyle: TextStyle(color: Colors.black)),
 //      autovalidate: true,
       initialValue: product == null ? '' : product.title,
       validator: (String value) {
@@ -45,12 +46,11 @@ class _ProductEditPage extends State<ProductEditPage> {
       },
     );
   }
+
   Widget _buildProviderTextField(Product product) {
     return TextFormField(
       decoration: InputDecoration(
-          labelText: 'Proveedor',
-          labelStyle: TextStyle(color: Colors.black)
-      ),
+          labelText: 'Proveedor', labelStyle: TextStyle(color: Colors.black)),
 //      autovalidate: true,
       initialValue: product == null ? '' : product.title,
       validator: (String value) {
@@ -70,9 +70,7 @@ class _ProductEditPage extends State<ProductEditPage> {
     return TextFormField(
       maxLines: 4,
       decoration: InputDecoration(
-        labelText: 'Descripción',
-          labelStyle: TextStyle(color: Colors.black)
-      ),
+          labelText: 'Descripción', labelStyle: TextStyle(color: Colors.black)),
       initialValue: product == null ? '' : product.description,
       validator: (String value) {
         //if(value.trim().length <= 0) {
@@ -90,9 +88,7 @@ class _ProductEditPage extends State<ProductEditPage> {
     return TextFormField(
         keyboardType: TextInputType.number,
         decoration: InputDecoration(
-          labelText: 'Precio',
-            labelStyle: TextStyle(color: Colors.black)
-        ),
+            labelText: 'Precio', labelStyle: TextStyle(color: Colors.black)),
         initialValue: product == null ? '' : product.price.toString(),
         validator: (String value) {
           //if(value.trim().length <= 0) {
@@ -105,7 +101,6 @@ class _ProductEditPage extends State<ProductEditPage> {
           _formData['price'] = int.parse(value);
         });
   }
-
 
   void _submitForm(
       Function addProduct, Function updateProduct, Function setSelectedProduct,
@@ -191,6 +186,9 @@ class _ProductEditPage extends State<ProductEditPage> {
         child: ListView(
           padding: EdgeInsets.symmetric(horizontal: targetPadding / 2),
           children: <Widget>[
+            SizedBox(height: 15.0),
+            _buildImagePicker(),
+            SizedBox(height: 15.0),
             _buildTitleTextField(product),
             _buildProviderTextField(product),
             _buildDescriptionField(product),
@@ -226,6 +224,25 @@ class _ProductEditPage extends State<ProductEditPage> {
 
   //Tratar de tener lo menro posible de logica en el build, solo enfocarse al diseño en el build
   //
+  _buildImagePicker() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        ClipRRect(
+          borderRadius: BorderRadius.circular(35.0),
+          child: Image.asset(
+            'assets/food.jpg',
+            fit: BoxFit.fill,
+            width: 150.0,
+            height: 150.0,
+          )
+        ),
+        IconButton(
+            icon: Icon(Icons.camera_enhance)),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<MainModel>(
