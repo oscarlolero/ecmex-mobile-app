@@ -4,7 +4,13 @@ import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
 
+import '../../models/product.dart';
+
 class ImageInput extends StatefulWidget {
+  final Function setImage;
+
+  ImageInput(this.setImage);
+
   @override
   State<StatefulWidget> createState() {
     return _ImageInputState();
@@ -20,6 +26,7 @@ class _ImageInputState extends State<ImageInput> {
         //update state
         _imageFile = image;
       });
+      widget.setImage(image);//para poder usar la imagen en product edit
       Navigator.pop(context);
     });
   }
@@ -91,12 +98,12 @@ class _ImageInputState extends State<ImageInput> {
         _imageFile == null
             ? Text('Por favor añada una imagen.')
             : Image.file(
-                _imageFile,
-                fit: BoxFit.cover,// la ajusta bonito :v
-                height: 300.0,
-                width: MediaQuery.of(context).size.width,
-                alignment: Alignment.topCenter,
-              )
+          _imageFile,
+          fit: BoxFit.cover,// la ajusta bonito :v
+          height: 300.0,
+          width: MediaQuery.of(context).size.width,
+          alignment: Alignment.topCenter,
+        )
       ],
     );
   }

@@ -1,9 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
-
-import 'package:image_picker/image_picker.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 import '../../../models/product.dart';
 import '../../../scoped-models/main.dart';
@@ -27,6 +26,10 @@ class _ProductEditPage extends State<ProductEditPage> {
   };
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  void _setImage(File image) {
+    _formData['image'] = image;
+  }
 
   Widget _buildTitleTextField(Product product) {
     return TextFormField(
@@ -187,14 +190,12 @@ class _ProductEditPage extends State<ProductEditPage> {
           padding: EdgeInsets.symmetric(horizontal: targetPadding / 2),
           children: <Widget>[
             SizedBox(height: 15.0),
-            _buildImagePicker(),
-            SizedBox(height: 15.0),
             _buildTitleTextField(product),
             _buildProviderTextField(product),
             _buildDescriptionField(product),
             _buildPriceTextField(product),
             SizedBox(height: 10.0),
-            ImageInput(),
+            ImageInput(_setImage),
             //tambien se puede usar un container
             SizedBox(height: 10.0),
             _buildSubmitButton(),
@@ -224,25 +225,6 @@ class _ProductEditPage extends State<ProductEditPage> {
 
   //Tratar de tener lo menro posible de logica en el build, solo enfocarse al diseño en el build
   //
-  _buildImagePicker() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        ClipRRect(
-          borderRadius: BorderRadius.circular(35.0),
-          child: Image.asset(
-            'assets/food.jpg',
-            fit: BoxFit.fill,
-            width: 150.0,
-            height: 150.0,
-          )
-        ),
-        IconButton(
-            icon: Icon(Icons.camera_enhance)),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<MainModel>(
