@@ -4,6 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../../../models/product.dart';
 import '../../../scoped-models/main.dart';
+import '../../../widgets/products/image.dart';
 
 class ProductEditPage extends StatefulWidget {
   @override
@@ -158,21 +159,19 @@ class _ProductEditPage extends State<ProductEditPage> {
   Widget _buildSubmitButton() {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
-        return Center(
-          child: model.isLoading
-              ? CircularProgressIndicator()
-              : RaisedButton(
-                  child: Text('Save'),
-                  color: Theme.of(context).primaryColor,
+        return model.isLoading
+            ? CircularProgressIndicator()
+            : RaisedButton(
+                child: Text('Guardar'),
+                color: Theme.of(context).primaryColor,
 //                  textColor: Colors.white,
-                  onPressed: () => _submitForm(
-                      model.addProduct,
-                      model.updateProduct,
-                      model.selectProduct,
-                      model
-                          .selectedProductIndex), //si no se esta editando se pasara null
-                ),
-        );
+                onPressed: () => _submitForm(
+                    model.addProduct,
+                    model.updateProduct,
+                    model.selectProduct,
+                    model
+                        .selectedProductIndex), //si no se esta editando se pasara null
+              );
       },
     );
   }
@@ -196,6 +195,8 @@ class _ProductEditPage extends State<ProductEditPage> {
             _buildProviderTextField(product),
             _buildDescriptionField(product),
             _buildPriceTextField(product),
+            SizedBox(height: 10.0),
+            ImageInput(),
             //tambien se puede usar un container
             SizedBox(height: 10.0),
             _buildSubmitButton(),
