@@ -130,7 +130,7 @@ class ProductPage extends StatelessWidget {
             image: NetworkImage(product.image),
             height: 300.0,
             fit: BoxFit.cover, //para que no se distorsione la imagen
-            placeholder: AssetImage('assets/food.jpg'),
+            placeholder: AssetImage('assets/loading.jpg'),
           ),
           SizedBox(height: 15.0),
           ScopedModelDescendant<MainModel>(

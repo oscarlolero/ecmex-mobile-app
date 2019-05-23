@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:scoped_model/scoped_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:mime_type/mime_type.dart';
 
 import '../models/product.dart';
 import '../models/user.dart';
@@ -107,8 +110,19 @@ mixin ProductsModel on ConnectedProductsModel {
     return _showFavorites;
   }
 
+  Future<String> _uploadImage(File image, String productId) async {
+    final fileTypeData = mime(image.path).split('/');
+    StorageReference ref = FirebaseStorage.instance.ref().child('products/${productId}.${fileTypeData[1]}');
+    StorageUploadTask uploadTask = ref.putFile(image);
+
+    final String downUrl = await (await uploadTask.onComplete).ref.getDownloadURL();
+    final url = downUrl.toString();
+
+    return url;
+  }
+
   Future<bool> addProduct(
-      String title, String description, String image, int price, String provider) async {
+      String title, String description, File image, int price, String provider) async {
     _isLoading = true;
     notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
     final Map<String, dynamic> productData = {
@@ -124,7 +138,7 @@ mixin ProductsModel on ConnectedProductsModel {
 
     try {
 //    http://192.168.0.10:3000/test
-      final http.Response response = await http.post(
+      http.Response response = await http.post(
         '${server.serverURL}/product',
         body: json.encode(productData),
         headers: {
@@ -137,7 +151,24 @@ mixin ProductsModel on ConnectedProductsModel {
         notifyListeners();
         return false;
       }
-//      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Map<String, dynamic> responseData = json.decode(response.body);
+      final String uploadedImageUrl = await _uploadImage(image, responseData['productId']);
+      response = await http.patch(
+        'https://flutter-products-3e91e.firebaseio.com/products/${responseData['productId']}.json',
+        body: json.encode({
+          "image": uploadedImageUrl
+        }),
+        headers: {
+          "content-type": "application/json",
+          "accept": "application/json",
+        },
+      );
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
+//
 //      final Product newProduct = Product(
 //          id: responseData['name'],
 //          title: title,
@@ -158,21 +189,19 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   Future<bool> updateProduct(
-      String title, String description, String image, int price, String provider) {
+      String title, String description, int price, String provider) {
     _isLoading = true;
     notifyListeners();
     final Map<String, dynamic> updateData = {
       'title': title,
       'description': description,
-      'image':
-          'https://flutter.dev/assets/homepage/carousel/phone_bezel-467ab8d838e5e2d2d3f347f766173ccc365220223692215416e4ce7342f2212f.png',
       'price': price,
       'provider': provider,
       'username': selectedProduct.username,
       'userid': selectedProduct.userid
     };
     return http
-        .put(
+        .patch(
             'https://flutter-products-3e91e.firebaseio.com/products/${selectedProduct.id}.json',
             body: json.encode(updateData))
         .then((http.Response response) {
@@ -253,24 +282,6 @@ mixin ProductsModel on ConnectedProductsModel {
       //https://www.udemy.com/learn-flutter-dart-to-build-ios-android-apps/learn/lecture/10840630#questions/6825196
       notifyListeners(); //This ensures, that existing pages are only immediately updated (=> re-rendered) when a product is selected, not when it's unselected.
     }
-  }
-
-  void toggleFavoriteProduct() {
-    final bool isCurrentlyFavorite = _products[selectedProductIndex].isFavorite;
-    final bool newFavoriteStatus = !isCurrentlyFavorite;
-    final Product updateProduct = Product(
-      //unnmutable way, best way
-      id: selectedProduct.id,
-      title: selectedProduct.title,
-      description: selectedProduct.description,
-      price: selectedProduct.price,
-      image: selectedProduct.image,
-      username: selectedProduct.username,
-      userid: selectedProduct.userid,
-      isFavorite: newFavoriteStatus,
-    );
-    _products[selectedProductIndex] = updateProduct;
-    notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
   }
 
   void toggleDisplayMode() {

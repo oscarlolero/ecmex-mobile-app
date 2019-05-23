@@ -20,8 +20,7 @@ class _ProductEditPage extends State<ProductEditPage> {
     'title': null,
     'description': null,
     'price': null,
-    'image':
-        'https://flutter.dev/assets/homepage/carousel/phone_bezel-467ab8d838e5e2d2d3f347f766173ccc365220223692215416e4ce7342f2212f.png',
+    'image': null,
     'provider': null
   };
 
@@ -146,7 +145,7 @@ class _ProductEditPage extends State<ProductEditPage> {
       updateProduct(
         _formData['title'],
         _formData['description'],
-        _formData['image'],
+//        _formData['image'],
         _formData['price'],
         _formData['provider'],
       ).then((_) => Navigator.pushReplacementNamed(context, '/products')
@@ -158,7 +157,7 @@ class _ProductEditPage extends State<ProductEditPage> {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         return model.isLoading
-            ? CircularProgressIndicator()
+            ? Center(child: CircularProgressIndicator())
             : RaisedButton(
                 child: Text('Guardar'),
                 color: Theme.of(context).primaryColor,
@@ -174,7 +173,8 @@ class _ProductEditPage extends State<ProductEditPage> {
     );
   }
 
-  Widget _buildPageContent(BuildContext context, Product product) {
+  Widget _buildPageContent(
+      BuildContext context, Product product, int selectedProductIndex) {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double targetWidth =
         MediaQuery.of(context).orientation == Orientation.landscape
@@ -185,20 +185,18 @@ class _ProductEditPage extends State<ProductEditPage> {
     return Container(
       margin: EdgeInsets.all(10.0),
       child: Form(
-        key: _formKey,
-        child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: targetPadding / 2),
-          children: <Widget>[
-            SizedBox(height: 15.0),
-            _buildTitleTextField(product),
-            _buildProviderTextField(product),
-            _buildDescriptionField(product),
-            _buildPriceTextField(product),
-            SizedBox(height: 10.0),
-            ImageInput(_setImage),
-            //tambien se puede usar un container
-            SizedBox(height: 10.0),
-            _buildSubmitButton(),
+          key: _formKey,
+          child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: targetPadding / 2),
+            children: <Widget>[
+              SizedBox(height: 15.0),
+              _buildTitleTextField(product),
+              _buildProviderTextField(product),
+              _buildDescriptionField(product),
+              _buildPriceTextField(product),
+              selectedProductIndex == -1 ? ImageInput(_setImage) : SizedBox(height: 10.0),
+
+              _buildSubmitButton(),
 //            GestureDetector(
 //              onTap: _submitForm,
 //              child: Container(
@@ -207,9 +205,8 @@ class _ProductEditPage extends State<ProductEditPage> {
 //                child: Text('My button'),
 //              ),
 //            ),
-          ],
-        ),
-      ),
+            ],
+          )),
     );
 //    return Center(
 //      child: RaisedButton(
@@ -229,8 +226,8 @@ class _ProductEditPage extends State<ProductEditPage> {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
-        final Widget pageContent =
-            _buildPageContent(context, model.selectedProduct);
+        final Widget pageContent = _buildPageContent(
+            context, model.selectedProduct, model.selectedProductIndex);
         return model.selectedProductIndex ==
                 -1 //regresa -1 si no encuentra nada el getter
             ? pageContent

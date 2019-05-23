@@ -66,10 +66,10 @@ class ProductCard extends StatelessWidget {
                 //array de widgets
 //          Image.asset(product.image),
                 FadeInImage(
-                  image: NetworkImage('https://flutter.dev/assets/homepage/carousel/phone_bezel-467ab8d838e5e2d2d3f347f766173ccc365220223692215416e4ce7342f2212f.png'),
+                  image: NetworkImage(product.image),
                   height: 300.0,
                   fit: BoxFit.cover,//para que no se distorsione la imagen
-                  placeholder: AssetImage('assets/food.jpg'),
+                  placeholder: AssetImage('assets/loading_spinner.gif'),
                 ),
                 //para hacer espacio se puede usar SizedBox(height: 10.0),Container(margin: EdgeInsets.all(10.0), Padding()
                 Container(
