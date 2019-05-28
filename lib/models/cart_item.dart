@@ -10,7 +10,8 @@ class CartItem {
     return {
       "productId": this.product.id,
       "title": this.product.title,
-      "qty": this.amount
+      "qty": this.amount,
+      "price": this.product.price
     };
   }
 

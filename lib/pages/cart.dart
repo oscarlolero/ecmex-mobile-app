@@ -26,15 +26,44 @@ class _CartPageState extends State<CartPage> {
     super.initState();
   }
 
-  void _purchaseProducts(MainModel model) async {
+  Future<bool> _asyncConfirmDialog(BuildContext context) async {
+    return showDialog<bool>(
+      context: context,
+      barrierDismissible: false, // user must tap button for close dialog!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Reset settings?'),
+          content: const Text(
+              'This will reset your device to its default factory settings.'),
+          actions: <Widget>[
+            FlatButton(
+              child: const Text('CANCEL'),
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            FlatButton(
+              child: const Text('ACCEPT'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
 
+  void _purchaseProducts(MainModel model) async {
+    bool requireBill = await _asyncConfirmDialog(context);
 
     List jsonList = CartItem.encondeToJson(model.allCartItems);
-    print("jsonList: ${json.encode(jsonList)}");
-
+    jsonList.add({"requireBill": requireBill});
+    String jsonCode = json.encode(jsonList);
+    print(jsonCode);
     http.Response response = await http.post(
-      '${server.serverURL}/test',
-      body: json.encode(jsonList),
+      '${server.serverURL}/mobile/bill',
+      body: jsonCode,
       headers: {
         "content-type": "application/json",
         "accept": "application/json",
