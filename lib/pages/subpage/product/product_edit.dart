@@ -21,7 +21,8 @@ class _ProductEditPage extends State<ProductEditPage> {
     'description': null,
     'price': null,
     'image': null,
-    'provider': null
+    'provider': null,
+    'stock': null
   };
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -39,7 +40,7 @@ class _ProductEditPage extends State<ProductEditPage> {
       validator: (String value) {
         //if(value.trim().length <= 0) {
         if (value.isEmpty || value.length < 5) {
-          return 'Title is required and should me 5+ characters long.';
+          return 'El título es requerido y necesita tener +5 caracteres.';
         }
       },
       onSaved: (String value) {
@@ -54,11 +55,11 @@ class _ProductEditPage extends State<ProductEditPage> {
       decoration: InputDecoration(
           labelText: 'Proveedor', labelStyle: TextStyle(color: Colors.black)),
 //      autovalidate: true,
-      initialValue: product == null ? '' : product.title,
+      initialValue: product == null ? '' : product.provider,
       validator: (String value) {
         //if(value.trim().length <= 0) {
         if (value.isEmpty || value.length < 5) {
-          return 'Provider is required and should me 5+ characters long.';
+          return 'El proveedor es requerido y necesita tener +5 caracteres.';
         }
       },
       onSaved: (String value) {
@@ -77,13 +78,31 @@ class _ProductEditPage extends State<ProductEditPage> {
       validator: (String value) {
         //if(value.trim().length <= 0) {
         if (value.isEmpty || value.length < 5) {
-          return 'Description is required and should be 5+ characters long.';
+          return 'La descripción es requerida y necesita tener +5 caracteres.';
         }
       },
       onSaved: (String value) {
         _formData['description'] = value;
       },
     );
+  }
+
+  Widget _buildStockTextField(Product product) {
+    return TextFormField(
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+            labelText: 'Stock', labelStyle: TextStyle(color: Colors.black)),
+        initialValue: product == null ? '' : product.stock.toString(),
+        validator: (String value) {
+          //if(value.trim().length <= 0) {
+          if (value.isEmpty ||
+              !RegExp(r'^(?:[1-9]\d*|0)?(?:\.\d+)?$').hasMatch(value)) {
+            return 'El stock es requerido y necesita ser un número.';
+          }
+        },
+        onSaved: (String value) {
+          _formData['stock'] = int.parse(value);
+        });
   }
 
   Widget _buildPriceTextField(Product product) {
@@ -96,7 +115,7 @@ class _ProductEditPage extends State<ProductEditPage> {
           //if(value.trim().length <= 0) {
           if (value.isEmpty ||
               !RegExp(r'^(?:[1-9]\d*|0)?(?:\.\d+)?$').hasMatch(value)) {
-            return 'Price is required and should be a number.';
+            return 'El precio es requerido y necesita ser un número.';
           }
         },
         onSaved: (String value) {
@@ -119,6 +138,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         _formData['image'],
         _formData['price'],
         _formData['provider'],
+        _formData['stock']
       ).then((bool sucess) {
         if (sucess) {
           Navigator.pushReplacementNamed(context, '/products')
@@ -148,6 +168,7 @@ class _ProductEditPage extends State<ProductEditPage> {
 //        _formData['image'],
         _formData['price'],
         _formData['provider'],
+        _formData['stock'],
       ).then((_) => Navigator.pushReplacementNamed(context, '/products')
           .then((_) => setSelectedProduct(null))); //_ ignore value);
     }
@@ -194,6 +215,7 @@ class _ProductEditPage extends State<ProductEditPage> {
               _buildProviderTextField(product),
               _buildDescriptionField(product),
               _buildPriceTextField(product),
+              _buildStockTextField(product),
               selectedProductIndex == -1 ? ImageInput(_setImage) : SizedBox(height: 10.0),
 
               _buildSubmitButton(),
@@ -233,7 +255,7 @@ class _ProductEditPage extends State<ProductEditPage> {
             ? pageContent
             : Scaffold(
                 appBar: AppBar(
-                  title: Text('Editar product'),
+                  title: Text('Editar producto'),
                 ),
                 body: pageContent,
               );

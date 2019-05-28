@@ -80,7 +80,7 @@ class _ProductsPageState extends State<ProductsPage> {
       return Scaffold(
         drawer: DrawerWidget(model),
         appBar: AppBar(
-          title: Text('ECTech'),
+          title: Text('TeknoMex'),
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.shopping_cart),

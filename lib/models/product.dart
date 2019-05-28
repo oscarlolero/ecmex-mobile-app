@@ -7,8 +7,7 @@ class Product {
   final String image;
   final int price;
   final bool isFavorite;
-  final String username;
-  final String userid;
+  final int stock;
   final String provider;
 
 //con los {}, pueden instanciar los parametros en el orden que quieran pero todos son requeridos
@@ -19,7 +18,6 @@ class Product {
       @required this.price,
       @required this.image,
       @required this.provider,
-      @required this.username,
-      @required this.userid,
+      @required this.stock,
       this.isFavorite = false});
 }

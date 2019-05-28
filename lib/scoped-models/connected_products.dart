@@ -25,6 +25,10 @@ mixin CartItemModel on ConnectedProductsModel {
     return List.from(_cartItems);
   }
 
+  List<CartItem> get allCartItemsUnprotected {
+    return _cartItems;
+  }
+
   int get getTotalPrice {
     int total = 0;
     if(_cartItems.length == 0) return 0;
@@ -122,7 +126,7 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   Future<bool> addProduct(
-      String title, String description, File image, int price, String provider) async {
+      String title, String description, File image, int price, String provider, int stock) async {
     _isLoading = true;
     notifyListeners(); //hace un rebuild a lo que esta dentro del wrap de ScopedModelDescendant
     final Map<String, dynamic> productData = {
@@ -132,8 +136,7 @@ mixin ProductsModel on ConnectedProductsModel {
           'https://flutter.dev/assets/homepage/carousel/phone_bezel-467ab8d838e5e2d2d3f347f766173ccc365220223692215416e4ce7342f2212f.png',
       'price': price,
       'provider': provider,
-      'username': _authenticatedUser.username,
-      'userid': _authenticatedUser.id
+      'stock': stock
     };
 
     try {
@@ -189,7 +192,7 @@ mixin ProductsModel on ConnectedProductsModel {
   }
 
   Future<bool> updateProduct(
-      String title, String description, int price, String provider) {
+      String title, String description, int price, String provider, int stock) {
     _isLoading = true;
     notifyListeners();
     final Map<String, dynamic> updateData = {
@@ -197,8 +200,7 @@ mixin ProductsModel on ConnectedProductsModel {
       'description': description,
       'price': price,
       'provider': provider,
-      'username': selectedProduct.username,
-      'userid': selectedProduct.userid
+      'stock': stock
     };
     return http
         .patch(
@@ -242,6 +244,7 @@ mixin ProductsModel on ConnectedProductsModel {
         .get('https://flutter-products-3e91e.firebaseio.com/products.json')
         .then<Null>((http.Response response) {
       final List<Product> fetchedproductList = [];
+//      print(response.body);
       final Map<String, dynamic> productListData = json.decode(response.body);
       if (productListData == null) {
         if (_products.length > 0) {
@@ -257,11 +260,11 @@ mixin ProductsModel on ConnectedProductsModel {
             id: productId,
             title: productData['title'],
             description: productData['description'],
-            price: productData['price'],
+            price: int.parse(productData['price'].toString()),
             image: productData['image'],
             provider: productData['provider'],
-            username: productData['username'],
-            userid: productData['userid']);
+            stock: int.parse(productData['stock'].toString()),
+        );
         fetchedproductList.add(product);
       });
       _products = fetchedproductList;
@@ -304,7 +307,7 @@ mixin UserModel on ConnectedProductsModel {
     };
 
     try {
-      Map<String, dynamic> responseData = {};
+      Map<dynamic, dynamic> responseData = {};
       String message = 'Algo salió mal.';
       bool success = false;
 
@@ -321,7 +324,6 @@ mixin UserModel on ConnectedProductsModel {
       if (response.statusCode == 200) {
         success = true;
         _authenticatedUser = User(
-          id: responseData['userId'],
           username: username,
           isAdmin: responseData['isAdmin'],
         );
@@ -335,6 +337,7 @@ mixin UserModel on ConnectedProductsModel {
 
       return {'success': success, 'message': message};
     } catch (error) {
+      print(error.toString());
       return {'success': false, 'message': 'Error al acceder al servidor.'};
     }
   }

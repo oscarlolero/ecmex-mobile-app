@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import 'package:scoped_model/scoped_model.dart';
 
 import '../scoped-models/main.dart';
+import '../config/server.dart' as server;
+import '../models/cart_item.dart';
 
 class CartPage extends StatefulWidget {
   final MainModel model;
@@ -22,6 +26,22 @@ class _CartPageState extends State<CartPage> {
     super.initState();
   }
 
+  void _purchaseProducts(MainModel model) async {
+
+
+    List jsonList = CartItem.encondeToJson(model.allCartItems);
+    print("jsonList: ${json.encode(jsonList)}");
+
+    http.Response response = await http.post(
+      '${server.serverURL}/test',
+      body: json.encode(jsonList),
+      headers: {
+        "content-type": "application/json",
+        "accept": "application/json",
+      },
+    );
+  }
+
   Widget _buildActionButtons() {
     return ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model) {
@@ -36,7 +56,9 @@ class _CartPageState extends State<CartPage> {
             ),
             Expanded(
               child: RaisedButton(
-                onPressed: () {},
+                onPressed: () {
+                  _purchaseProducts(model);
+                },
                 child: Text('Comprar todo',
                   style: TextStyle(
                     color: Theme.of(context).primaryColor,
