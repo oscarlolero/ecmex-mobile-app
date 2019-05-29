@@ -75,37 +75,25 @@ class ProductPage extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            RaisedButton(
-              onPressed: () {},
-              shape: new RoundedRectangleBorder(
-                  borderRadius: new BorderRadius.circular(30.0)),
-              padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
-              textColor: Colors.white,
-              elevation: 6.0,
-              child: Text(
-                'COMPRAR AHORA',
-                style: TextStyle(
-                    letterSpacing: 1.5,
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
             ScopedModelDescendant<MainModel>(
                 builder: (BuildContext context, Widget child, MainModel model) {
-                  return RaisedButton(
+                  return  RaisedButton(
                   onPressed: () {
                     model.addCartItem(product);
+                    Navigator.of(context).pop();
                   },
-                  child: new Icon(
-                    Icons.add_shopping_cart,
-                    size: 23.0,
-                    color: Theme.of(context).primaryColor,
+                  shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(30.0)),
+                  padding: EdgeInsets.symmetric(horizontal: 40.0, vertical: 15.0),
+                  textColor: Colors.white,
+                  elevation: 6.0,
+                  child: Text(
+                    'AGREGAR A CARRITO',
+                    style: TextStyle(
+                        letterSpacing: 1.5,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
                   ),
-                  shape: new CircleBorder(),
-                  elevation: 4.0,
-                  colorBrightness: Theme.of(context).accentColorBrightness,
-                  color: Theme.of(context).accentColor,
-                  padding: const EdgeInsets.all(14.0),
                 );
               }
             ),

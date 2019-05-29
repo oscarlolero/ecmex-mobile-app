@@ -25,10 +25,6 @@ mixin CartItemModel on ConnectedProductsModel {
     return List.from(_cartItems);
   }
 
-  List<CartItem> get allCartItemsUnprotected {
-    return _cartItems;
-  }
-
   int get getTotalPrice {
     int total = 0;
     if(_cartItems.length == 0) return 0;
@@ -47,7 +43,7 @@ mixin CartItemModel on ConnectedProductsModel {
 
     int existingProductId, index = 0;
     for(final cartItem in _cartItems) {
-      if (cartItem.product == product) {
+      if (cartItem.product.title == product.title) {
         existingProductId = index;
         break;
       }
@@ -71,6 +67,30 @@ mixin CartItemModel on ConnectedProductsModel {
     notifyListeners();
   }
 
+  void clearAllCartProduct() {
+    _cartItems.clear();
+    notifyListeners();
+  }
+
+  Future<bool> purchaseProducts(bool requireBill) async {
+    try {
+      List jsonList = CartItem.encondeToJson(_cartItems);
+      jsonList.add({"requireBill": requireBill, "username": _authenticatedUser.username});
+      String jsonCode = json.encode(jsonList);
+      await http.post(
+        '${server.serverURL}/mobile/bill',
+        body: jsonCode,
+        headers: {
+          "content-type": "application/json",
+          "accept": "application/json",
+        },
+      );
+      return true;
+    } catch (e) {
+      print(e);
+      return false;
+    }
+  }
 }
 
 mixin ProductsModel on ConnectedProductsModel {
@@ -296,8 +316,11 @@ mixin ProductsModel on ConnectedProductsModel {
 mixin UserModel on ConnectedProductsModel {
   bool get isAdmin {
     //TODO REMOVER ESTO ANTES DE RELEASE
-    if(_authenticatedUser.isAdmin == null) return true;
     return _authenticatedUser.isAdmin;
+  }
+
+  String get username {
+    return _authenticatedUser.username;
   }
 
   Future<Map<String, dynamic>> login(String username, String password) async {

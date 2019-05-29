@@ -32,18 +32,18 @@ class _CartPageState extends State<CartPage> {
       barrierDismissible: false, // user must tap button for close dialog!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Reset settings?'),
+          title: Text('¿Requiere factura?'),
           content: const Text(
-              'This will reset your device to its default factory settings.'),
+              'Se generará una factura con los datos anteriormente proporciodados.'),
           actions: <Widget>[
             FlatButton(
-              child: const Text('CANCEL'),
+              child: const Text('No'),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
             FlatButton(
-              child: const Text('ACCEPT'),
+              child: const Text('Sí'),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
@@ -54,22 +54,6 @@ class _CartPageState extends State<CartPage> {
     );
   }
 
-  void _purchaseProducts(MainModel model) async {
-    bool requireBill = await _asyncConfirmDialog(context);
-
-    List jsonList = CartItem.encondeToJson(model.allCartItems);
-    jsonList.add({"requireBill": requireBill});
-    String jsonCode = json.encode(jsonList);
-    print(jsonCode);
-    http.Response response = await http.post(
-      '${server.serverURL}/mobile/bill',
-      body: jsonCode,
-      headers: {
-        "content-type": "application/json",
-        "accept": "application/json",
-      },
-    );
-  }
 
   Widget _buildActionButtons() {
     return ScopedModelDescendant<MainModel>(
@@ -85,8 +69,47 @@ class _CartPageState extends State<CartPage> {
             ),
             Expanded(
               child: RaisedButton(
-                onPressed: () {
-                  _purchaseProducts(model);
+                onPressed: () async {
+                  bool requireBill = await _asyncConfirmDialog(context);
+                  bool succed = await model.purchaseProducts(requireBill);
+                  if(succed) {
+                    model.clearAllCartProduct();
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Compra realizada'),
+                          content: Text('¡Gracias por tu compra!'),
+                          actions: <Widget>[
+                            FlatButton(
+                              child: Text('Cerrar', style: TextStyle(color: Colors.deepOrange),),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            )
+                          ],
+                        );
+                      },
+                    );
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Ha ocurrido un error'),
+                          content: Text('Hay un error con tu compra'),
+                          actions: <Widget>[
+                            FlatButton(
+                              child: Text('Cerrar', style: TextStyle(color: Colors.deepOrange),),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            )
+                          ],
+                        );
+                      },
+                    );
+                  }
                 },
                 child: Text('Comprar todo',
                   style: TextStyle(
