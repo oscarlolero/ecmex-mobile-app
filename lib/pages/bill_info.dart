@@ -128,6 +128,7 @@ class _BillInfoPage extends State<BillInfoPage> {
   _buildForm() {
     return ListView(
       children: <Widget>[
+        SizedBox(height: 20.0),
         Text(
           'Introduzca sus datos para facturar.',
           style: TextStyle(fontSize: 19.0, fontWeight: FontWeight.bold),
@@ -167,7 +168,7 @@ class _BillInfoPage extends State<BillInfoPage> {
         appBar: AppBar(
           title: Text('Facturación'),
         ),
-        body: Container(margin: EdgeInsets.all(20.0), child: _buildForm()),
+        body: Container(margin: EdgeInsets.symmetric(horizontal: 20.0), child: _buildForm()),
       );
     });
   }

@@ -34,6 +34,14 @@ class DrawerWidget extends StatelessWidget {
               },
             ),
             ListTile(
+              leading: Icon(Icons.attach_money),
+              title: Text('Ventas'),
+              onTap: () {
+                Navigator.pushReplacementNamed(context,
+                    '/sales'); //se remplaza completamente la pagina actual
+              },
+            ),
+            ListTile(
               leading: Icon(Icons.folder_shared),
               title: Text('Facturación'),
               onTap: () {

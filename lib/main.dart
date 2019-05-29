@@ -11,6 +11,7 @@ import './scoped-models/main.dart';
 import './models/product.dart';
 import './pages/cart.dart';
 import './pages/bill_info.dart';
+import './pages/sales.dart';
 
 //shortcut: void main() => runApp(MyApp());
 void main() {
@@ -50,6 +51,7 @@ class _MyAppState extends State<MyApp> {
           '/admin': (BuildContext context) => ProductsAdminPage(model),
           '/cart': (BuildContext context) => CartPage(model),
           '/bill': (BuildContext context) => BillInfoPage(model),
+          '/sales': (BuildContext context) => SalesPage(model),
         },
         //se ejecuta si la ruta no fue encontrada en routes
         onGenerateRoute: (RouteSettings settings) {
