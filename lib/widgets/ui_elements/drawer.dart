@@ -33,6 +33,14 @@ class DrawerWidget extends StatelessWidget {
                     '/admin'); //se remplaza completamente la pagina actual
               },
             ),
+            ListTile(
+              leading: Icon(Icons.folder_shared),
+              title: Text('Facturación'),
+              onTap: () {
+                Navigator.pushReplacementNamed(context,
+                    '/bill'); //se remplaza completamente la pagina actual
+              },
+            )
           ],
         ),
       );
@@ -57,7 +65,7 @@ class DrawerWidget extends StatelessWidget {
               title: Text('Facturación'),
               onTap: () {
                 Navigator.pushReplacementNamed(context,
-                    '/products'); //se remplaza completamente la pagina actual
+                    '/bill'); //se remplaza completamente la pagina actual
               },
             ),
           ],

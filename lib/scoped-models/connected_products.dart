@@ -77,7 +77,7 @@ mixin CartItemModel on ConnectedProductsModel {
       List jsonList = CartItem.encondeToJson(_cartItems);
       jsonList.add({"requireBill": requireBill, "username": _authenticatedUser.username});
       String jsonCode = json.encode(jsonList);
-      await http.post(
+      http.Response response = await http.post(
         '${server.serverURL}/mobile/bill',
         body: jsonCode,
         headers: {
@@ -85,7 +85,11 @@ mixin CartItemModel on ConnectedProductsModel {
           "accept": "application/json",
         },
       );
-      return true;
+      if(response.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
     } catch (e) {
       print(e);
       return false;

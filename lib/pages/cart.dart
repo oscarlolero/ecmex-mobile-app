@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 import 'package:scoped_model/scoped_model.dart';
 
 import '../scoped-models/main.dart';
-import '../config/server.dart' as server;
-import '../models/cart_item.dart';
 
 class CartPage extends StatefulWidget {
   final MainModel model;
