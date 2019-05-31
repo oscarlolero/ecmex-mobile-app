@@ -22,16 +22,16 @@ class ProductsAdminPage extends StatelessWidget {
         child: Scaffold(
           drawer: DrawerWidget(model),
           appBar: AppBar(
-            title: Text('Manage products'),
+            title: Text('Manejar productos'),
             bottom: TabBar(
               tabs: <Widget>[
                 Tab(
                   icon: Icon(Icons.create),
-                  text: 'Create product',
+                  text: 'Crear producto',
                 ),
                 Tab(
                   icon: Icon(Icons.list),
-                  text: 'My products',
+                  text: 'Editar producto',
                 ),
               ],
             ),

@@ -66,7 +66,7 @@ class _ProductListPageState extends State<ProductListPage> {
 //                            AssetImage(model.allProducts[index].image)),
                     title: Text(model.allProducts[index].title),
                     subtitle:
-                        Text('\$' + model.allProducts[index].price.toString()),
+                        Text('\$' + model.allProducts[index].price.toString() + ' Cant. ' + model.allProducts[index].stock.toString()),
                     trailing: _buildEditButton(context, index, model),
                   ),
                   Divider(),

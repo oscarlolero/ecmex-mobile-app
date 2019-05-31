@@ -111,13 +111,13 @@ class ProductPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(product.title)),
-      body: Column(
+      body: ListView(
         children: <Widget>[
           SizedBox(height: 15.0),
           FadeInImage(
             image: NetworkImage(product.image),
             height: 300.0,
-            fit: BoxFit.cover, //para que no se distorsione la imagen
+            fit: BoxFit.contain, //para que no se distorsione la imagen
             placeholder: AssetImage('assets/loading.jpg'),
           ),
           SizedBox(height: 15.0),
@@ -126,13 +126,14 @@ class ProductPage extends StatelessWidget {
                 return Container(
                 padding: EdgeInsets.symmetric(horizontal: 25.0),
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     _buildTopInfo(context, product.price),
                     SizedBox(height: 10.0),
                     _buildMainProductInfo(),
                     SizedBox(height: 15.0),
-                    Text(product.description, style: TextStyle(fontSize: 16.0),textAlign: TextAlign.right,)
+                    Text(product.description, style: TextStyle(fontSize: 16.0),textAlign: TextAlign.justify,)
                   ],
                 ),
               );
